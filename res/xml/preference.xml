@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/pref_login_credential_title"
+        android:key="pref_login_credential">
+        <Preference
+            android:key="pref_login"
+            android:title="@string/pref_login_title"
+            android:summary="@string/pref_login_summ" />
+        <Preference
+            android:dependency="pref_login"
+            android:key="pref_delete_account"
+            android:title="@string/pref_delete_account_title"
+            android:summary="@string/pref_delete_account_summary"/>
+    </PreferenceCategory>
+</PreferenceScreen>
