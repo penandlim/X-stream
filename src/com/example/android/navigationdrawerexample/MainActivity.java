@@ -72,6 +72,7 @@ public class MainActivity extends Activity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
 
+    public static final String PREFS_NAME = "MyPrefsFile";
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private String[] mPlanetTitles;
@@ -135,7 +136,6 @@ public class MainActivity extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        menu.findItem(R.id.action_settings_button).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 

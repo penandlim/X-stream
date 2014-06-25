@@ -8,9 +8,16 @@
             android:title="@string/pref_login_title"
             android:summary="@string/pref_login_summ" />
         <Preference
-            android:dependency="pref_login"
             android:key="pref_delete_account"
             android:title="@string/pref_delete_account_title"
-            android:summary="@string/pref_delete_account_summary"/>
+            android:summary="@string/pref_delete_account_summary"
+            android:shouldDisableView="true"
+            android:enabled="false" />
+        <CheckBoxPreference
+        android:key="perform_updates"
+        android:summary="Enable or disable data updates"
+        android:title="Enable updates"
+        android:defaultValue="true"
+        />
     </PreferenceCategory>
 </PreferenceScreen>
