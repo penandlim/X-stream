@@ -37,15 +37,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import org.jsoup.Jsoup;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.regex.*;
-import org.jsoup.Jsoup;
-
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This example illustrates a common usage of the DrawerLayout widget
@@ -258,8 +260,10 @@ public class MainActivity extends Activity {
             return rootView;
         }
     }
-	
-	public static String xvid(String url) throws IOException
+
+
+    // Parse URL and return the stream link on www.xvideos.com
+	public String xvid_source(String url) throws IOException
     {
         //gets the line full of junk, turns into html doc for jsoup, and converts into the wanted vid url
         String line = Jsoup.parse(UrlToHtml(url)).select("embed").attr("flashvars");
@@ -275,7 +279,8 @@ public class MainActivity extends Activity {
         }
     }
 
-    private static String UrlToHtml(String give_url) throws IOException {
+    // Function to parse URL to HTML. Should work on all websites
+    public String UrlToHtml(String give_url) throws IOException {
         URL url = new URL(give_url);
         URLConnection con = url.openConnection();
         BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -286,5 +291,9 @@ public class MainActivity extends Activity {
             a.append(inputLine);
         in.close();
         return a.toString();
+    }
+
+    public void play_video(String url) {
+
     }
 }
