@@ -18,7 +18,7 @@ package com.example.android.navigationdrawerexample;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -35,9 +35,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.jsoup.Jsoup;
 
@@ -46,6 +52,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -82,16 +90,24 @@ public class MainActivity extends Activity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
+    private ImageLoader imageLoader;
 
     public static final String PREFS_NAME = "MyPrefsFile";
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private String[] mPlanetTitles;
+    public static Context mContext;
+    private static GridView gridView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mContext = this;
+        ImageLoaderConfiguration config = ImageLoaderConfiguration.createDefault(mContext);
+        imageLoader = ImageLoader.getInstance();
+        imageLoader.init(config);
+
 
         mTitle = mDrawerTitle = getTitle();
         mPlanetTitles = getResources().getStringArray(R.array.planets_array);
@@ -117,7 +133,7 @@ public class MainActivity extends Activity {
                 R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
                 R.string.drawer_open,  /* "open drawer" description for accessibility */
                 R.string.drawer_close  /* "close drawer" description for accessibility */
-                ) {
+        ) {
             public void onDrawerClosed(View view) {
                 getActionBar().setTitle(mTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
@@ -130,9 +146,9 @@ public class MainActivity extends Activity {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        if (savedInstanceState == null) {
-            selectItem(0);
-        }
+
+        gridView = (GridView)findViewById(R.id.gridview);
+        gridView.setAdapter(new MyAdapter(this));
     }
 
     @Override
@@ -164,25 +180,25 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-         // The action bar home/up action should open or close the drawer.
-         // ActionBarDrawerToggle will take care of this.
+        // The action bar home/up action should open or close the drawer.
+        // ActionBarDrawerToggle will take care of this.
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
         // Handle action buttons
         switch(item.getItemId()) {
-        case R.id.action_settings_button:
-            // create intent to perform web search for this planet
-            Intent intent = new Intent(this,SettingsActivity.class);
-            // catch event that there's no activity to handle intent
-            if (intent.resolveActivity(getPackageManager()) != null) {
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_LONG).show();
-            }
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+            case R.id.action_settings_button:
+                // create intent to perform web search for this planet
+                Intent intent = new Intent(this,SettingsActivity.class);
+                // catch event that there's no activity to handle intent
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_LONG).show();
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -196,20 +212,11 @@ public class MainActivity extends Activity {
 
     private void selectItem(int position) {
 
-        // update the main content by replacing fragments
-        Fragment fragment = new PlanetFragment();
         Bundle args = new Bundle();
-        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
-        fragment.setArguments(args);
-
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-        // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
         setTitle(mPlanetTitles[position]);
         mDrawerLayout.closeDrawer(mDrawerList);
-
+        gridView.setAdapter(new MyAdapter(this));
     }
 
     @Override
@@ -249,7 +256,7 @@ public class MainActivity extends Activity {
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+                                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_planet, container, false);
             int i = getArguments().getInt(ARG_PLANET_NUMBER);
             String planet = getResources().getStringArray(R.array.planets_array)[i];
@@ -262,9 +269,79 @@ public class MainActivity extends Activity {
         }
     }
 
+    private class MyAdapter extends BaseAdapter {
+        private List<Item> items = new ArrayList<Item>();
+        private LayoutInflater inflater;
+
+        public MyAdapter(Context context) {
+            inflater = LayoutInflater.from(context);
+
+            items.add(new Item("Red",      "https://redditstatic.s3.amazonaws.com/about/assets/reddit-alien-small.png"));
+            items.add(new Item("Magenta",   "https://i.imgur.com/dmiMtec.png"));
+            items.add(new Item("Dark Gray", "https://redditstatic.s3.amazonaws.com/about/assets/reddit-alien-small.png"));
+            items.add(new Item("Gray",      "https://i.imgur.com/dmiMtec.png"));
+            items.add(new Item("Green",    "https://i.imgur.com/dmiMtec.png"));
+            items.add(new Item("Cyan",      "https://i.imgur.com/dmiMtec.png"));
+            items.add(new Item("Cya2n",     "https://i.imgur.com/dmiMtec.png"));
+        }
+
+        @Override
+        public int getCount() {
+            return items.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return items.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            View v = view;
+            ImageView picture;
+            TextView name;
+
+            if(v == null) {
+                v = inflater.inflate(R.layout.grid_item, viewGroup, false);
+                v.setTag(R.id.picture, v.findViewById(R.id.picture));
+                v.setTag(R.id.text, v.findViewById(R.id.text));
+            }
+
+
+
+            picture = (ImageView)v.getTag(R.id.picture);
+            name = (TextView)v.getTag(R.id.text);
+
+            Item item = (Item)getItem(i);
+
+            //picture.setImageResource(item.drawableId);
+
+
+            imageLoader.displayImage(item.sourceURL,picture);
+            name.setText(item.name);
+
+            return v;
+        }
+
+        private class Item {
+            final String name;
+            final String sourceURL;
+
+            Item(String name, String sourceURL) {
+                this.name = name;
+                this.sourceURL = sourceURL;
+            }
+        }
+    }
+
 
     // Parse URL and return the stream link on www.xvideos.com
-	public String xvid_source(String url) throws IOException
+    public String xvid_source(String url) throws IOException
     {
         //gets the line full of junk, turns into html doc for jsoup, and converts into the wanted vid url
         String line = Jsoup.parse(UrlToHtml(url)).select("embed").attr("flashvars");

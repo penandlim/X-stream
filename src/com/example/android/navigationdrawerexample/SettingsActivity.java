@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
-import android.util.Log;
 
 import org.jsoup.Jsoup;
 
@@ -61,7 +60,6 @@ public class SettingsActivity extends PreferenceActivity {
             String streamurl = "";
             try {
                 streamurl = xvid_source(urls[0]);
-                Log.d("nigger1",streamurl);
                 return streamurl;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -104,7 +102,6 @@ public class SettingsActivity extends PreferenceActivity {
             return a.toString();
         }
         public static void play_video(String streamURL){
-            Log.v("nigger2", streamURL);
             if (!streamURL.equals("")) {
                 Uri url_to_video = Uri.parse(streamURL);
                 Intent intent = new Intent(Intent.ACTION_VIEW, url_to_video);

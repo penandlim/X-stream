@@ -22,15 +22,12 @@ public class Video {
         Elements elem = info.select("div[class = thumbInside]");
         List<videoObject> kList = new ArrayList<videoObject>();
         String vid_url, title, img;
-        int count = 0;
         for (Element link : elem){
             if (link.children().select("a").attr("href") != "") {
                 title = link.children().select("p").text();
                 vid_url = "http://www.xvideos.com" + link.children().select("a").attr("href");
                 img = link.children().select("img").attr("src");
-                kList.add(new videoObject());
-                kList.get(count).set(title, vid_url, img);
-                count++;
+                kList.add(new videoObject(title, vid_url, img));
             }
         }
         return kList;
@@ -43,7 +40,7 @@ class videoObject {//title, preview image, and landing page (url to html)
     String vid_pg_url;
     String vid_url;
 
-    void set(String tit, String url, String pic){
+    videoObject(String tit, String url, String pic){
         title = tit;
         picture = pic;
         vid_pg_url = url;
@@ -95,6 +92,10 @@ class videoObject {//title, preview image, and landing page (url to html)
 }
 
 class videoObject_xvideo extends videoObject{
+
+    videoObject_xvideo(String tit, String url, String pic) {
+        super(tit, url, pic);
+    }
 
     String getVideoSourceURL(){
         //gets the line full of junk, turns into html doc for jsoup, and converts into the wanted vid url
