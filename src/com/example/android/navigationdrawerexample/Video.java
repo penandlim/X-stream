@@ -1,5 +1,9 @@
 package com.example.android.navigationdrawerexample;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -101,8 +105,13 @@ class videoObject {//title, preview image, and landing page (url to html)
         }
     }
 
-    void playVideo(){
-        //for john to fill in
+    void playVideo(String streamURL, Context mContext){
+        if (!streamURL.equals("")) {
+            Uri url_to_video = Uri.parse(streamURL);
+            Intent intent = new Intent(Intent.ACTION_VIEW, url_to_video);
+            intent.setDataAndType(url_to_video, "video/*");
+            mContext.startActivity(intent);
+        }
     }
 
 }
