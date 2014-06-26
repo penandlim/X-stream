@@ -20,17 +20,33 @@ public class Video {
     public static List xvid_page(String url) {
         Document info = Jsoup.parse(videoObject.parseURLtoHTML(url));
         Elements elem = info.select("div[class = thumbInside]");
-        List<videoObject> kList = new ArrayList<videoObject>();
+        List<videoObject_xvideo> kList = new ArrayList<videoObject_xvideo>();
         String vid_url, title, img;
+        String vid;
+        Pattern pattern = Pattern.compile("/profiles/");
+        Matcher matcher;
         for (Element link : elem){
-            if (link.children().select("a").attr("href") != "") {
+            vid = link.children().select("a").attr("href");
+            matcher = pattern.matcher(vid);
+            if (vid != "" && !matcher.find()) {
                 title = link.children().select("p").text();
-                vid_url = "http://www.xvideos.com" + link.children().select("a").attr("href");
+                vid_url = "http://www.xvideos.com" + vid;
                 img = link.children().select("img").attr("src");
-                kList.add(new videoObject(title, vid_url, img));
+                kList.add(new videoObject_xvideo(title, vid_url, img));
             }
         }
         return kList;
+    }
+    //sort = relevance, uploaddate, or rating (rating is default)
+    //dur = 1-3min, 3-10min, 10min_more, or allduration (allduration is default)
+    //date = today, week, month, or all (all is default)
+    public static List xvid_search(String search, String sort, String dur, String date){
+        if (sort.isEmpty()){ sort = "rating";}
+        if (date.isEmpty()){ date = "all";}
+        if (dur.isEmpty()){ dur = "allduration";}
+        String base = "http://www.xvideos.com/?k=";
+        String url = base + search + "&sort=" + sort + "&durf" + dur + "&datef=" + date;
+        return xvid_page(url);
     }
 }
 
