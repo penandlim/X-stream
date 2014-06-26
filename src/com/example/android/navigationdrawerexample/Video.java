@@ -20,7 +20,7 @@ public class Video {
     public static List xvid_page(String url) {
         Document info = Jsoup.parse(videoObject.parseURLtoHTML(url));
         Elements elem = info.select("div[class = thumbInside]");
-        List<videoObject> kList = new ArrayList<videoObject>();
+        List<videoObject_xvideo> kList = new ArrayList<videoObject_xvideo>();
         String vid_url, title, img;
         int count = 0;
         for (Element link : elem){
@@ -28,7 +28,7 @@ public class Video {
                 title = link.children().select("p").text();
                 vid_url = "http://www.xvideos.com" + link.children().select("a").attr("href");
                 img = link.children().select("img").attr("src");
-                kList.add(new videoObject());
+                kList.add(new videoObject_xvideo());
                 kList.get(count).set(title, vid_url, img);
                 count++;
             }
