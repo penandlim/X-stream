@@ -37,6 +37,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.regex.*;
+import org.jsoup.Jsoup;
 
 import java.util.Locale;
 
@@ -250,5 +257,34 @@ public class MainActivity extends Activity {
             getActivity().setTitle(planet);
             return rootView;
         }
+    }
+	
+	public static String xvid(String url) throws IOException
+    {
+        //gets the line full of junk, turns into html doc for jsoup, and converts into the wanted vid url
+        String line = Jsoup.parse(UrlToHtml(url)).select("embed").attr("flashvars");
+        //makes the vid url into a proper url
+        Pattern pattern = Pattern.compile("(?<=flv_url=).+(?=&url_bigthumb=)");
+        Matcher matcher = pattern.matcher(line);
+        if (matcher.find()) {
+            return matcher.group().replace("%3D", "=").replace("%26", "&").replace("%3F", "?")
+                    .replace("%3B", ";").replace("%2F", "/").replace("%3A", ":");
+        }
+        else{
+            return "None";
+        }
+    }
+
+    private static String UrlToHtml(String give_url) throws IOException {
+        URL url = new URL(give_url);
+        URLConnection con = url.openConnection();
+        BufferedReader in = new BufferedReader(new InputStreamReader(
+                con.getInputStream(), "UTF-8"));
+        String inputLine;
+        StringBuilder a = new StringBuilder();
+        while ((inputLine = in.readLine()) != null)
+            a.append(inputLine);
+        in.close();
+        return a.toString();
     }
 }
