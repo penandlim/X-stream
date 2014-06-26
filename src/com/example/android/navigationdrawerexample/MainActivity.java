@@ -21,6 +21,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
@@ -294,6 +295,11 @@ public class MainActivity extends Activity {
     }
 
     public void play_video(String url) {
-
+        if (url != "None") {
+            Uri url_to_video = Uri.parse(url);
+            Intent intent = new Intent(Intent.ACTION_VIEW, url_to_video);
+            intent.setDataAndType(url_to_video, "video/*");
+            startActivity(intent);
+        }
     }
 }
