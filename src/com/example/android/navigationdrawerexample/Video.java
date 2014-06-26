@@ -28,7 +28,7 @@ public class Video {
         for (Element link : elem){
             vid = link.children().select("a").attr("href");
             matcher = pattern.matcher(vid);
-            if (vid != "" && !matcher.find()) {
+            if (!vid.equals("") && !matcher.find()) {
                 title = link.children().select("p").text();
                 vid_url = "http://www.xvideos.com" + vid;
                 img = link.children().select("img").attr("src");
