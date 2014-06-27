@@ -306,9 +306,26 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        protected void onPostExecute(List<videoObject_xvideo> video_Objects){
+        protected void onPostExecute(final List<videoObject_xvideo> video_Objects){
             gridView.setAdapter(new GridAdapter_xvideos(mContext, video_Objects, imageLoader));
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Toast.makeText(mContext, "Loading video...",
+                            Toast.LENGTH_LONG).show();
+                    new playvideo_xvideo().execute(video_Objects.get(i).getVideoURL());
+                }
+                class playvideo_xvideo extends AsyncTask<String, Void, Void> {
+
+                    @Override
+                    protected Void doInBackground(String... strings) {
+                        videoObject_xvideo.playVideo(videoObject_xvideo.getVideoSourceURL(strings[0]),mContext);
+                        return null;
+                    }
+                }
+            });
         }
+
     }
 
     public class loadData_xnxx extends AsyncTask<String, Void, List<videoObject_xvideo>> {
@@ -321,8 +338,25 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        protected void onPostExecute(List<videoObject_xvideo> video_Objects){
+        protected void onPostExecute(final List<videoObject_xvideo> video_Objects){
             gridView.setAdapter(new GridAdapter_xvideos(mContext, video_Objects, imageLoader));
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Toast.makeText(mContext, "Loading video...",
+                            Toast.LENGTH_LONG).show();
+                    new playvideo_xvideo().execute(video_Objects.get(i).getVideoURL());
+                }
+
+                class playvideo_xvideo extends AsyncTask<String, Void, Void> {
+
+                    @Override
+                    protected Void doInBackground(String... strings) {
+                        videoObject_xvideo.playVideo(videoObject_xvideo.getVideoSourceURL(strings[0]), mContext);
+                        return null;
+                    }
+                }
+            });
         }
     }
 
@@ -336,8 +370,27 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        protected void onPostExecute(List<videoObject_redtube> video_Objects){
-            gridView.setAdapter(new GridAdapter_redtube(mContext, video_Objects,imageLoader));
+        protected void onPostExecute(final List<videoObject_redtube> video_Objects){
+            gridView.setAdapter(new GridAdapter_redtube(mContext, video_Objects, imageLoader));
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Toast.makeText(mContext, "Loading video...",
+                            Toast.LENGTH_LONG).show();
+                    new playvideo_redtube().execute(video_Objects.get(i).getVideoURL());
+                }
+
+                class playvideo_redtube extends AsyncTask<String, Void, Void> {
+
+                    @Override
+                    protected Void doInBackground(String... strings) {
+                        videoObject_redtube.playVideo(videoObject_redtube.getVideoSourceURL(strings[0]), mContext);
+                        return null;
+                    }
+                }
+
+
+            });
         }
     }
 

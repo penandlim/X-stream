@@ -1,14 +1,12 @@
 package com.example.android.navigationdrawerexample;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -93,30 +91,6 @@ class GridAdapter_xvideos extends GridAdapter {
         }
     }
 
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup){
-        View v = super.getView(i,view,viewGroup);
-
-        assert v != null;
-
-        v.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Toast.makeText(mContext, "Loading video...",
-                        Toast.LENGTH_LONG).show();
-                new playvideo_xvideo().execute(vsourceURL);
-            }
-        });
-        return v;
-    }
-
-    private class playvideo_xvideo extends AsyncTask<String, Void, Void> {
-
-        @Override
-        protected Void doInBackground(String... strings) {
-            videoObject_xvideo.playVideo(videoObject_xvideo.getVideoSourceURL(strings[0]),mContext);
-            return null;
-        }
-    }
 }
 
 class GridAdapter_redtube extends GridAdapter {
@@ -128,28 +102,5 @@ class GridAdapter_redtube extends GridAdapter {
         }
     }
 
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup){
-        View v = super.getView(i,view,viewGroup);
 
-        assert v != null;
-
-        v.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Toast.makeText(mContext, "Loading video...",
-                        Toast.LENGTH_LONG).show();
-                new playvideo_redtube().execute(vsourceURL);
-            }
-        });
-        return v;
-    }
-
-    private class playvideo_redtube extends AsyncTask<String, Void, Void> {
-
-        @Override
-        protected Void doInBackground(String... strings) {
-            videoObject_redtube.playVideo(videoObject_redtube.getVideoSourceURL(strings[0]),mContext);
-            return null;
-        }
-    }
 }
