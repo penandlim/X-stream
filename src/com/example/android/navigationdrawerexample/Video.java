@@ -114,10 +114,9 @@ public class Video {
     }
 
     //sort = "new", "top", "mostviewed", or "" ("" is default for most relevant)
-    public static List redtube_search(String search, String sort){
+    public static String redtube_search(String search, String sort){
         String base = "http://www.redtube.com/";
-        String url = base + sort + "?search=" + search;
-        return redtube_page(url);
+        return base + sort + "?search=" + search;
     }
 
 
