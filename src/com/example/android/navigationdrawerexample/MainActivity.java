@@ -293,6 +293,7 @@ public class MainActivity extends Activity {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
+        gridView.setNumColumns(getResources().getInteger(R.integer.grid_rows));
     }
 
 
