@@ -80,7 +80,7 @@ public class Video {
     //sort = relevance, uploaddate, or rating (rating is default)
     //dur = 1-3min, 3-10min, 10min_more, or allduration (allduration is default)
     //date = today, week, month, or all (all is default)
-    public static List xnxx_search(String search, String sort, String dur, String date){
+    public static String xnxx_search(String search, String sort, String dur, String date){
         if (sort.isEmpty()) {
             sort = "rating";
         }
@@ -91,8 +91,7 @@ public class Video {
             dur = "allduration";
         }
         String base = "http://www.xnxx.com/?k=";
-        String url = base + search + "&sort=" + sort + "&durf" + dur + "&datef=" + date;
-        return xvid_page(url);
+        return base + search + "&sort=" + sort + "&durf" + dur + "&datef=" + date;
     }
 
     public static List redtube_page(String url) {
