@@ -26,7 +26,7 @@ public class Video {
         Elements elem = info.select("div[class = thumbInside]");
         List<videoObject_xvideo> kList = new ArrayList<videoObject_xvideo>();
         String vid_url, title, img;
-        String vid;
+        String vid = "";
         Pattern pattern = Pattern.compile("/profiles/");
         Matcher matcher;
         for (Element link : elem){
