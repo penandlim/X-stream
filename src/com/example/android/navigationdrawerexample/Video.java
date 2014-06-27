@@ -144,7 +144,7 @@ public class Video {
             vid = link.children().select("a").attr("href");
             if (!vid.equals("")) {
                 title = link.children().select("a").attr("title");
-                img = link.children().select("img").attr("src");
+                img = link.children().select("img").attr("data-src");
                 kList.add(new videoObject_redtube(title, "http://www.redtube.com" + vid, img));
             }
         }
@@ -220,6 +220,9 @@ class videoObject {//title, preview image, and landing page (url to html)
         }
         try {
             URLConnection con = url.openConnection();
+            String useragent = "Mozilla/5.0 (Windows NT 6.1; WOW64) " +
+                    "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2071.0 Safari/537.36";
+            con.setRequestProperty("User-Agent", useragent);
             BufferedReader in = new BufferedReader(new InputStreamReader(
                     con.getInputStream(), "UTF-8"));
             String inputLine;
