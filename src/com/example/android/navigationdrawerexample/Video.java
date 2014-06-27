@@ -21,7 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Video {
-    public static List xvid_page(String url) {
+    public static List<videoObject_xvideo> xvid_page(String url) {
         Document info = Jsoup.parse(videoObject.parseURLtoHTML(url));
         Elements elem = info.select("div[class = thumbInside]");
         List<videoObject_xvideo> kList = new ArrayList<videoObject_xvideo>();
@@ -35,7 +35,6 @@ public class Video {
                 title = link.children().select("p").text();
                 img = link.children().select("img").attr("src");
                 kList.add(new videoObject_xvideo(title, "http://www.xvideos.com" + vid, img));
-                System.out.println("ADDED");
             }
         }
         return kList;
@@ -59,20 +58,17 @@ public class Video {
         return base + search + "&sort=" + sort + "&durf" + dur + "&datef=" + date;
     }
 
-    public static List xnxx_page(String url) {
+    public static List<videoObject_xvideo> xnxx_page(String url) {
         Document info = Jsoup.parse(videoObject.parseURLtoHTML(url));
         Elements elem = info.select("li");
         List<videoObject_xvideo> kList = new ArrayList<videoObject_xvideo>();
         String vid, title, img;
-        System.out.println("Function ACCESSED");
         for (Element link : elem){
-            System.out.println("INSIDE FOR LOOP");
             vid = link.children().select("a").attr("href");
             img = link.children().select("img").attr("src");
             if (!vid.equals("") && !img.equals("")) {
                 title = link.text();
                 kList.add(new videoObject_xvideo(title, vid, img));
-                System.out.println("ADDED");
             }
         }
         return kList;
@@ -96,19 +92,19 @@ public class Video {
         return base + search + "&sort=" + sort + "&durf" + dur + "&datef=" + date;
     }
 
-    public static List redtube_page(String url) {
+    public static List<videoObject_redtube> redtube_page(String url) {
         Document info = Jsoup.parse(videoObject.parseURLtoHTML(url));
         Elements elem = info.select("div[class = video]");
-        List<videoObject_xvideo> kList = new ArrayList<videoObject_xvideo>();
+        List<videoObject_redtube> kList = new ArrayList<videoObject_redtube>();
         String vid, title, img;
-        System.out.println("Function ACCESSED");
+        System.out.println("Function ACCESSED redtube");
         for (Element link : elem){
             System.out.println("INSIDE FOR LOOP");
             vid = link.children().select("a").attr("href");
             if (!vid.equals("")) {
                 title = link.children().select("a").attr("title");
                 img = link.children().select("img").attr("src");
-                kList.add(new videoObject_xvideo(title, "http://www.redtube.com" + vid, img));
+                kList.add(new videoObject_redtube(title, "http://www.redtube.com" + vid, img));
                 System.out.println("ADDED");
             }
         }
@@ -121,8 +117,6 @@ public class Video {
         search = search.replace(" ", "+");
         return base + sort + "?search=" + search;
     }
-
-
 }
 
 

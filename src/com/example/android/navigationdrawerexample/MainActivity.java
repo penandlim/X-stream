@@ -26,19 +26,15 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,7 +42,6 @@ import android.widget.Toast;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -206,19 +201,47 @@ public class MainActivity extends Activity {
 
         Bundle args = new Bundle();
         System.out.println(position);
+        final EditText editText = (EditText) findViewById(R.id.search_button);
         switch (position){
             case 0 :
                 new loadData_xvideo().execute("http://www.xvideos.com");
-                final EditText editText =
-                        (EditText) findViewById(R.id.search_button);
                 editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-
                     @Override
                     public boolean onEditorAction(TextView v, int actionId,KeyEvent event) {
                         if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                             InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                             in.hideSoftInputFromWindow(editText.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
                             new loadData_xvideo().execute(Video.xvid_search(editText.getText().toString(), "", "", ""));
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+                break;
+            case 1 :
+                new loadData_xnxx().execute("http://www.xnxx.com");
+                editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId,KeyEvent event) {
+                        if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                            InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            in.hideSoftInputFromWindow(editText.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+                            new loadData_xnxx().execute(Video.xnxx_search(editText.getText().toString(), "", "", ""));
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+                break;
+            case 2 :
+                new loadData_redtube().execute("http://www.redtube.com");
+                editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId,KeyEvent event) {
+                        if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                            InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            in.hideSoftInputFromWindow(editText.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+                            new loadData_redtube().execute(Video.redtube_search(editText.getText().toString(), ""));
                             return true;
                         }
                         return false;
@@ -272,109 +295,8 @@ public class MainActivity extends Activity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    /**
-     * Fragment that appears in the "content_frame", shows a planet
-     */
-    /*
-    public static class PlanetFragment extends Fragment {
-        public static final String ARG_PLANET_NUMBER = "planet_number";
 
-        public PlanetFragment() {
-            // Empty constructor required for fragment subclasses
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_planet, container, false);
-            int i = getArguments().getInt(ARG_PLANET_NUMBER);
-            String planet = getResources().getStringArray(R.array.planets_array)[i];
-
-            int imageId = getResources().getIdentifier(planet.replaceAll("\\s", "").toLowerCase(Locale.getDefault()),
-                    "drawable", getActivity().getPackageName());
-            ((ImageView) rootView.findViewById(R.id.image)).setImageResource(imageId);
-            getActivity().setTitle(planet);
-            return rootView;
-        }
-    }
-    */
-
-    private class MyAdapter extends BaseAdapter {
-        final private List<Item> items = new ArrayList<Item>();
-        private LayoutInflater inflater;
-
-        public MyAdapter(Context context , List<videoObject_xvideo> videoList) {
-            inflater = LayoutInflater.from(context);
-            for (videoObject_xvideo xvideo_variable : videoList) {
-                items.add(new Item(xvideo_variable.title, xvideo_variable.picture, xvideo_variable.vid_pg_url ));
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return items.size();
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return items.get(i);
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            View v = view;
-            ImageView picture;
-            TextView name;
-
-            if(v == null) {
-                v = inflater.inflate(R.layout.grid_item, viewGroup, false);
-                v.setTag(R.id.picture, v.findViewById(R.id.picture));
-                v.setTag(R.id.text, v.findViewById(R.id.text));
-            }
-
-
-
-            picture = (ImageView)v.getTag(R.id.picture);
-            name = (TextView)v.getTag(R.id.text);
-
-            final Item item = (Item)getItem(i);
-
-            //picture.setImageResource(item.drawableId);
-
-
-            imageLoader.displayImage(item.sourceURL,picture);
-            name.setText(item.name);
-
-            v.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    Toast.makeText(mContext, "Loading Video",
-                            Toast.LENGTH_LONG).show();
-                    new playvideo_xvideo().execute(item.videoSourceURL);
-                }
-            });
-
-            return v;
-        }
-
-        private class Item {
-            final String name;
-            final String sourceURL;
-            final String videoSourceURL;
-
-            Item(String name, String sourceURL, String videoSourceURL) {
-                this.name = name;
-                this.sourceURL = sourceURL;
-                this.videoSourceURL = videoSourceURL;
-            }
-        }
-    }
-
-    class loadData_xvideo extends AsyncTask<String, Void, List<videoObject_xvideo>> {
+    public class loadData_xvideo extends AsyncTask<String, Void, List<videoObject_xvideo>> {
 
         @Override
         protected List<videoObject_xvideo> doInBackground(String... strings) {
@@ -383,23 +305,39 @@ public class MainActivity extends Activity {
             return kList;
         }
 
-        void play_video(String streamURL){
-            videoObject_xvideo.playVideo(videoObject_xvideo.getVideoSourceURL(streamURL), mContext);
+        @Override
+        protected void onPostExecute(List<videoObject_xvideo> video_Objects){
+            gridView.setAdapter(new GridAdapter_xvideos(mContext, video_Objects, imageLoader));
+        }
+    }
+
+    public class loadData_xnxx extends AsyncTask<String, Void, List<videoObject_xvideo>> {
+
+        @Override
+        protected List<videoObject_xvideo> doInBackground(String... strings) {
+            List<videoObject_xvideo> kList = Video.xnxx_page(strings[0]);
+            //Log.d("doInBackground", kList.get(0).getTitle());
+            return kList;
         }
 
         @Override
         protected void onPostExecute(List<videoObject_xvideo> video_Objects){
-            gridView.setAdapter(new MyAdapter(mContext, video_Objects));
+            gridView.setAdapter(new GridAdapter_xvideos(mContext, video_Objects, imageLoader));
         }
     }
 
-    class playvideo_xvideo extends AsyncTask<String, Void, Void> {
+    public class loadData_redtube extends AsyncTask<String, Void, List<videoObject_redtube>> {
 
         @Override
-        protected Void doInBackground(String... strings) {
-            System.out.println(strings[0]);
-            videoObject_xvideo.playVideo(videoObject_xvideo.getVideoSourceURL(strings[0]),mContext);
-            return null;
+        protected List<videoObject_redtube> doInBackground(String... strings) {
+            List<videoObject_redtube> kList = Video.redtube_page(strings[0]);
+            //Log.d("doInBackground", kList.get(0).getTitle());
+            return kList;
+        }
+
+        @Override
+        protected void onPostExecute(List<videoObject_redtube> video_Objects){
+            gridView.setAdapter(new GridAdapter_redtube(mContext, video_Objects,imageLoader));
         }
     }
 
