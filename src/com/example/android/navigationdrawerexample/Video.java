@@ -25,8 +25,7 @@ public class Video {
         Document info = Jsoup.parse(videoObject.parseURLtoHTML(url));
         Elements elem = info.select("div[class = thumbInside]");
         List<videoObject_xvideo> kList = new ArrayList<videoObject_xvideo>();
-        String vid_url, title, img;
-        String vid = "";
+        String vid, title, img;
         Pattern pattern = Pattern.compile("/profiles/");
         Matcher matcher;
         System.out.println("Function ACCESSED");
@@ -36,9 +35,8 @@ public class Video {
             matcher = pattern.matcher(vid);
             if (!vid.equals("") && !matcher.find()) {
                 title = link.children().select("p").text();
-                vid_url = "http://www.xvideos.com" + vid;
                 img = link.children().select("img").attr("src");
-                kList.add(new videoObject_xvideo(title, vid_url, img));
+                kList.add(new videoObject_xvideo(title, "http://www.xvideos.com" + vid, img));
                 System.out.println("ADDED");
             }
         }
@@ -62,6 +60,70 @@ public class Video {
         String url = base + search + "&sort=" + sort + "&durf" + dur + "&datef=" + date;
         return xvid_page(url);
     }
+
+    public static List xnxx_page(String url) {
+        Document info = Jsoup.parse(videoObject.parseURLtoHTML(url));
+        Elements elem = info.select("li");
+        List<videoObject_xvideo> kList = new ArrayList<videoObject_xvideo>();
+        String vid, title, img;
+        System.out.println("Function ACCESSED");
+        for (Element link : elem){
+            System.out.println("INSIDE FOR LOOP");
+            vid = link.children().select("a").attr("href");
+            img = link.children().select("img").attr("src");
+            if (!vid.equals("") && !img.equals("")) {
+                title = link.text();
+                kList.add(new videoObject_xvideo(title, vid, img));
+                System.out.println("ADDED");
+            }
+        }
+        return kList;
+    }
+
+    //sort = relevance, uploaddate, or rating (rating is default)
+    //dur = 1-3min, 3-10min, 10min_more, or allduration (allduration is default)
+    //date = today, week, month, or all (all is default)
+    public static List xnxx_search(String search, String sort, String dur, String date){
+        if (sort.isEmpty()) {
+            sort = "rating";
+        }
+        if (date.isEmpty()) {
+            date = "all";
+        }
+        if (dur.isEmpty()) {
+            dur = "allduration";
+        }
+        String base = "http://www.xnxx.com/?k=";
+        String url = base + search + "&sort=" + sort + "&durf" + dur + "&datef=" + date;
+        return xvid_page(url);
+    }
+
+    public static List redtube_page(String url) {
+        Document info = Jsoup.parse(videoObject.parseURLtoHTML(url));
+        Elements elem = info.select("div[class = video]");
+        List<videoObject_xvideo> kList = new ArrayList<videoObject_xvideo>();
+        String vid, title, img;
+        System.out.println("Function ACCESSED");
+        for (Element link : elem){
+            System.out.println("INSIDE FOR LOOP");
+            vid = link.children().select("a").attr("href");
+            if (!vid.equals("")) {
+                title = link.children().select("a").attr("title");
+                img = link.children().select("img").attr("src");
+                kList.add(new videoObject_xvideo(title, "http://www.redtube.com" + vid, img));
+                System.out.println("ADDED");
+            }
+        }
+        return kList;
+    }
+
+    //sort = "new", "top", "mostviewed", or "" ("" is default for most relevant)
+    public static List redtube_search(String search, String sort){
+        String base = "http://www.redtube.com/";
+        String url = base + sort + "?search=" + search;
+        return redtube_page(url);
+    }
+
 }
 
 
@@ -140,27 +202,59 @@ class videoObject_xvideo extends videoObject{
         //makes the vid url into a proper url
         Pattern pattern = Pattern.compile("(?<=flv_url=).+(?=&url_bigthumb=)");
         Matcher matcher = pattern.matcher(line);
+        vid_url = "";
         if (matcher.find()) {
             vid_url = matcher.group().replace("%3D", "=").replace("%26", "&").replace("%3F", "?")
                     .replace("%3B", ";").replace("%2F", "/").replace("%3A", ":");
         }
-        else{
-            vid_url = "";
-        }
         return vid_url;
     }
-    static String getVideoSourceURL(String vid_pg_url){
+    static String getVideoSourceURL(String vid_pg_url_2){
         //gets the line full of junk, turns into html doc for jsoup, and converts into the wanted vid url
-        String line = Jsoup.parse(parseURLtoHTML(vid_pg_url)).select("embed").attr("flashvars");
+        String line = Jsoup.parse(parseURLtoHTML(vid_pg_url_2)).select("embed").attr("flashvars");
         //makes the vid url into a proper url
         Pattern pattern = Pattern.compile("(?<=flv_url=).+(?=&url_bigthumb=)");
         Matcher matcher = pattern.matcher(line);
-        String vid_url = "";
+        String vid_url_2 = "";
+        if (matcher.find()) {
+            vid_url_2 = matcher.group().replace("%3D", "=").replace("%26", "&").replace("%3F", "?")
+                    .replace("%3B", ";").replace("%2F", "/").replace("%3A", ":");
+        }
+        return vid_url_2;
+    }
+
+}
+
+class videoObject_redtube extends videoObject {
+
+    videoObject_redtube(String tit, String url, String pic) {
+        super(tit, url, pic);
+    }
+
+    String getVideoSourceURL(){
+        //gets the line full of junk, turns into html doc for jsoup, and converts into the wanted vid url
+        String line = Jsoup.parse(parseURLtoHTML(vid_pg_url)).select("div[id = redtube_flv_player]").select("script").html();
+        //makes the vid url into a proper url
+        Pattern pattern = Pattern.compile("(?<=&flv_h264_url=).+(?=&sitepath=)");
+        Matcher matcher = pattern.matcher(line);
+        vid_url = "";
         if (matcher.find()) {
             vid_url = matcher.group().replace("%3D", "=").replace("%26", "&").replace("%3F", "?")
                     .replace("%3B", ";").replace("%2F", "/").replace("%3A", ":");
         }
         return vid_url;
     }
-
+    static String getVideoSourceURL(String vid_pg_url_2){
+        //gets the line full of junk, turns into html doc for jsoup, and converts into the wanted vid url
+        String line = Jsoup.parse(parseURLtoHTML(vid_pg_url_2)).select("div[id = redtube_flv_player]").select("script").html();
+        //makes the vid url into a proper url
+        Pattern pattern = Pattern.compile("(?<=&flv_h264_url=).+(?=&sitepath=)");
+        Matcher matcher = pattern.matcher(line);
+        String vid_url_2 = "";
+        if (matcher.find()) {
+            vid_url_2 = matcher.group().replace("%3D", "=").replace("%26", "&").replace("%3F", "?")
+                    .replace("%3B", ";").replace("%2F", "/").replace("%3A", ":");
+        }
+        return vid_url_2;
+    }
 }
