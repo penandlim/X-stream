@@ -21,14 +21,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Video {
+
+    static private int page_number = 1;
+    static private String current_url;
+
+    public static void reset_page(){
+        page_number=1;
+    }
+
     public static List<videoObject_xvideo> xvid_page(String url) {
+        current_url = url;
         Document info = Jsoup.parse(videoObject.parseURLtoHTML(url));
         Elements elem = info.select("div[class = thumbInside]");
         List<videoObject_xvideo> kList = new ArrayList<videoObject_xvideo>();
         String vid, title, img;
         Pattern pattern = Pattern.compile("/profiles/");
         Matcher matcher;
-        for (Element link : elem) {
+        for (Element link : elem){
             vid = link.children().select("a").attr("href");
             matcher = pattern.matcher(vid);
             if (!vid.equals("") && !matcher.find()) {
@@ -39,48 +48,43 @@ public class Video {
         }
         return kList;
     }
-
     //sort = relevance, uploaddate, or rating (rating is default)
     //dur = 1-3min, 3-10min, 10min_more, or allduration (allduration is default)
     //date = today, week, month, or all (all is default)
-    public static String xvid_search(String search, String sort, String dur, String date) {
-        if (sort.isEmpty()) {
-            sort = "rating";
-        }
-        if (date.isEmpty()) {
-            date = "all";
-        }
-        if (dur.isEmpty()) {
-            dur = "allduration";
-        }
+    public static String xvid_search(String search, String sort, String dur, String date){
+        if (sort.isEmpty()) sort = "rating";
+        if (date.isEmpty()) date = "all";
+        if (dur.isEmpty()) dur = "allduration";
         search = search.replace(" ", "+");
         String base = "http://www.xvideos.com/?k=";
-        return base + search + "&sort=" + sort + "&durf" + dur + "&datef=" + date;
+        current_url = base + search + "&sort=" + sort + "&durf" + dur + "&datef=" + date;
+        return current_url;
     }
 
-    public static String xvid_nPage(String old_url, int pagenum) {
-        String new_url = "http://www.xvideos.com/new/1";
-        if(old_url.contains("com/new/")){
-            new_url = "http://www.xvideos.com/new/" + (pagenum + 1);
+    //NorP is (-1) or (1), for gong to next or previous
+    //starts at 0 not 1, so new var of page instead of page_number
+    public static String xvid_npPage(int NorP) {
+        int page = page_number -1;
+        if(page==0 && NorP<0){
+            NorP=0;
         }
-        else if(old_url.contains("com/?k=")){
-            new_url = old_url.replaceAll("&p=\\d+", "&p=" + (pagenum+1));
-        }
-        return new_url;
-    }
 
-    public static String xvid_pPage(String old_url, int pagenum) {
-        String new_url = "http://www.xvideos.com/";
-        if(pagenum > 0 && old_url.contains("com/new/")){
-            new_url = "http://www.xvideos.com/new/" + (pagenum - 1);
+        if(current_url.contains("com/?k=")){
+            if (current_url.contains("&p="))
+                current_url = current_url.replaceAll("&p=\\d+", "&p=" + (page+NorP));
+            else
+                current_url += "&p=" + (page+NorP);
         }
-        else if(pagenum > 0 && old_url.contains("com/?k=")){
-            new_url = old_url.replaceAll("&p=\\d+", "&p=" + (pagenum-1));
+        else
+        {
+            current_url="http://www.xvideos.com/new/" + (page+NorP);
         }
-        return new_url;
+        page_number += NorP;
+        return current_url;
     }
 
     public static List<videoObject_xvideo> xnxx_page(String url) {
+        current_url = url;
         Document info = Jsoup.parse(videoObject.parseURLtoHTML(url));
         Elements elem = info.select("li");
         List<videoObject_xvideo> kList = new ArrayList<videoObject_xvideo>();
@@ -100,57 +104,48 @@ public class Video {
     //dur = 1-3min, 3-10min, 10min_more, or allduration (allduration is default)
     //date = today, week, month, or all (all is default)
     public static String xnxx_search(String search, String sort, String dur, String date){
-        if (sort.isEmpty()) {
-            sort = "rating";
-        }
-        if (date.isEmpty()) {
-            date = "all";
-        }
-        if (dur.isEmpty()) {
-            dur = "allduration";
-        }
-        search = search.replace(" ", "+");
+        if (sort.isEmpty()) sort = "rating";
+        if (date.isEmpty()) date = "all";
+        if (dur.isEmpty()) dur = "allduration";
         String base = "http://www.xnxx.com/?k=";
-        return base + search + "&sort=" + sort + "&durf" + dur + "&datef=" + date;
+        search = search.replace(" ", "+");
+        current_url = base + search + "&sort=" + sort + "&durf" + dur + "&datef=" + date;
+        return current_url;
     }
 
-    public static String xnxx_nPage(String old_url, int pagenum) {
-        String new_url = "http://www.xnxx.com/new/1";
-        if(old_url.contains("com/new/")){
-            new_url = "http://www.xnxx.com/new/" + (pagenum + 1);
+    //NorP is (-1) or (1), for gong to next or previous
+    //starts at 0 not 1, so new var of page instead of page_number
+    public static String xnxx_npPage(int NorP) {
+        int page = page_number -1;
+        if(page==0 && NorP<0){
+            NorP=0;
         }
-        else if(old_url.contains("com/?k=")){
-            new_url = old_url.replaceAll("&p=\\d+", "&p=" + (pagenum+1));
-        }
-        return new_url;
-    }
 
-    public static String xnxx_pPage(String old_url, int pagenum) {
-        String new_url = "http://www.xnxx.com/";
-        if(pagenum > 0 && old_url.contains("com/new/")){
-            new_url = "http://www.xnxx.com/new/" + (pagenum - 1);
+        if(current_url.contains("com/?k=")){
+            if (current_url.contains("&p="))
+                current_url = current_url.replaceAll("&p=\\d+", "&p=" + (page+NorP));
+            else
+                current_url += "&p=" + (page+NorP);
         }
-        else if(pagenum > 0 && old_url.contains("com/?k=")){
-            new_url = old_url.replaceAll("&p=\\d+", "&p=" + (pagenum-1));
+        else{
+            current_url = "http://www.xnxx.com/home/" + (page + NorP);
         }
-        return new_url;
+        page_number +=NorP;
+        return current_url;
     }
-
 
     public static List<videoObject_redtube> redtube_page(String url) {
+        current_url = url;
         Document info = Jsoup.parse(videoObject.parseURLtoHTML(url));
         Elements elem = info.select("div[class = video]");
         List<videoObject_redtube> kList = new ArrayList<videoObject_redtube>();
         String vid, title, img;
-        System.out.println("Function ACCESSED redtube");
         for (Element link : elem){
-            System.out.println("INSIDE FOR LOOP");
             vid = link.children().select("a").attr("href");
             if (!vid.equals("")) {
                 title = link.children().select("a").attr("title");
                 img = link.children().select("img").attr("src");
                 kList.add(new videoObject_redtube(title, "http://www.redtube.com" + vid, img));
-                System.out.println("ADDED");
             }
         }
         return kList;
@@ -160,29 +155,30 @@ public class Video {
     public static String redtube_search(String search, String sort){
         String base = "http://www.redtube.com/";
         search = search.replace(" ", "+");
-        return base + sort + "?search=" + search;
+        current_url = base + sort + "?search=" + search;
+        return current_url;
     }
 
-    public static String redtube_nPage(String old_url, int pagenum) {
-        String new_url = "http://www.redtube.com?page=1";
-        if(old_url.contains("?page")){
-            new_url = "http://www.redtube.com/?page=" + (pagenum + 1);
+    //NorP is (-1) or (1), for going to next or previous
+    public static String redtube_npPage(int NorP) {
+        if(page_number == 1 && NorP<0){
+            NorP=0;
         }
-        else if (old_url.contains("&page=")){
-            new_url = old_url.replaceAll("&page=\\d+", "&page=" + (pagenum+1));
-        }
-        return new_url;
-    }
 
-    public static String redtube_pPage(String old_url, int pagenum) {
-        String new_url = "http://www.redtube.com/";
-        if(pagenum > 0 && old_url.contains("com/new/")){
-            new_url = "http://www.redtube.com/?page=" + (pagenum - 1);
+        if(current_url.contains("?page")){
+            current_url = "http://www.redtube.com/?page=" + (page_number + NorP);
         }
-        else if(pagenum > 0 && old_url.contains("com/?k=")){
-            new_url = old_url.replaceAll("&page=\\d+", "&page=" + (pagenum-1));
+        else if (current_url.contains("&page")){
+            current_url = current_url.replaceAll("&page=\\d+", "&page=" + (page_number + NorP));
         }
-        return new_url;
+        else if(current_url.contains("?search")){
+            current_url += "&page=" + (page_number + NorP);
+        }
+        else{
+            current_url += "?page=" + (page_number + NorP);
+        }
+        page_number +=NorP;
+        return current_url;
     }
 
 }
