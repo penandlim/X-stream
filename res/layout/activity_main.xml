@@ -30,9 +30,14 @@
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <EditText android:id="@+id/search_button"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:hint="Search" />
 
         <GridView
             android:id="@+id/gridview"
+            android:layout_marginTop="40dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:verticalSpacing="0dp"

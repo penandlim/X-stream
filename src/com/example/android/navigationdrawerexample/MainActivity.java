@@ -17,7 +17,6 @@
 package com.example.android.navigationdrawerexample;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -33,9 +32,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -47,7 +48,6 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * This example illustrates a common usage of the DrawerLayout widget
@@ -205,12 +205,46 @@ public class MainActivity extends Activity {
     private void selectItem(int position) {
 
         Bundle args = new Bundle();
-        new loadData_xvideo().execute("http://www.xvideos.com");
+        System.out.println(position);
+        switch (position){
+            case 0 :
+                new loadData_xvideo().execute("http://www.xvideos.com");
+                final EditText editText =
+                        (EditText) findViewById(R.id.search_button);
+                editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId,KeyEvent event) {
+                        if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                            InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            in.hideSoftInputFromWindow(editText.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+                            new loadData_xvideo().execute(Video.xvid_search(editText.getText().toString(), "", "", ""));
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+                break;
+            case 8 :
+                Intent intent = new Intent(mContext,SettingsActivity.class);
+                startActivity(intent);
+                break;
+            default :
+                new loadData_xvideo().execute("http://www.xvideos.com");
+                break;
+        }
+
+
 
         // Sets position, title, and closes the drawer.
-        mDrawerList.setItemChecked(position, true);
-        setTitle(mPlanetTitles[position]);
+        if (position !=8) {
+            mDrawerList.setItemChecked(position, true);
+            setTitle(mPlanetTitles[position]);
+        }
+        else
+            mDrawerList.setItemChecked(position, false);
         mDrawerLayout.closeDrawer(mDrawerList);
+
     }
 
     @Override
@@ -241,6 +275,7 @@ public class MainActivity extends Activity {
     /**
      * Fragment that appears in the "content_frame", shows a planet
      */
+    /*
     public static class PlanetFragment extends Fragment {
         public static final String ARG_PLANET_NUMBER = "planet_number";
 
@@ -262,6 +297,7 @@ public class MainActivity extends Activity {
             return rootView;
         }
     }
+    */
 
     private class MyAdapter extends BaseAdapter {
         final private List<Item> items = new ArrayList<Item>();

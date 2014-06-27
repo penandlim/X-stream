@@ -28,9 +28,7 @@ public class Video {
         String vid, title, img;
         Pattern pattern = Pattern.compile("/profiles/");
         Matcher matcher;
-        System.out.println("Function ACCESSED");
         for (Element link : elem) {
-            System.out.println("INSIDE FOR LOOP");
             vid = link.children().select("a").attr("href");
             matcher = pattern.matcher(vid);
             if (!vid.equals("") && !matcher.find()) {
@@ -46,7 +44,7 @@ public class Video {
     //sort = relevance, uploaddate, or rating (rating is default)
     //dur = 1-3min, 3-10min, 10min_more, or allduration (allduration is default)
     //date = today, week, month, or all (all is default)
-    public static List xvid_search(String search, String sort, String dur, String date) {
+    public static String xvid_search(String search, String sort, String dur, String date) {
         if (sort.isEmpty()) {
             sort = "rating";
         }
@@ -57,8 +55,7 @@ public class Video {
             dur = "allduration";
         }
         String base = "http://www.xvideos.com/?k=";
-        String url = base + search + "&sort=" + sort + "&durf" + dur + "&datef=" + date;
-        return xvid_page(url);
+        return base + search + "&sort=" + sort + "&durf" + dur + "&datef=" + date;
     }
 
     public static List xnxx_page(String url) {
@@ -123,6 +120,7 @@ public class Video {
         String url = base + sort + "?search=" + search;
         return redtube_page(url);
     }
+
 
 }
 
