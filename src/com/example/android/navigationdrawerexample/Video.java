@@ -54,6 +54,7 @@ public class Video {
         if (dur.isEmpty()) {
             dur = "allduration";
         }
+        search = search.replace(" ", "+");
         String base = "http://www.xvideos.com/?k=";
         return base + search + "&sort=" + sort + "&durf" + dur + "&datef=" + date;
     }
@@ -90,6 +91,7 @@ public class Video {
         if (dur.isEmpty()) {
             dur = "allduration";
         }
+        search = search.replace(" ", "+");
         String base = "http://www.xnxx.com/?k=";
         return base + search + "&sort=" + sort + "&durf" + dur + "&datef=" + date;
     }
@@ -116,6 +118,7 @@ public class Video {
     //sort = "new", "top", "mostviewed", or "" ("" is default for most relevant)
     public static String redtube_search(String search, String sort){
         String base = "http://www.redtube.com/";
+        search = search.replace(" ", "+");
         return base + sort + "?search=" + search;
     }
 
