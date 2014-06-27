@@ -21,7 +21,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
@@ -45,18 +45,9 @@ import android.widget.Toast;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import org.jsoup.Jsoup;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This example illustrates a common usage of the DrawerLayout widget
@@ -145,10 +136,11 @@ public class MainActivity extends Activity {
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-
         gridView = (GridView)findViewById(R.id.gridview);
-        gridView.setAdapter(new MyAdapter(this));
+
+        if (savedInstanceState == null) {
+            selectItem(0);
+        }
     }
 
     @Override
@@ -213,10 +205,12 @@ public class MainActivity extends Activity {
     private void selectItem(int position) {
 
         Bundle args = new Bundle();
+        new loadData_xvideo().execute("http://www.xvideos.com");
+
+        // Sets position, title, and closes the drawer.
         mDrawerList.setItemChecked(position, true);
         setTitle(mPlanetTitles[position]);
         mDrawerLayout.closeDrawer(mDrawerList);
-        gridView.setAdapter(new MyAdapter(this));
     }
 
     @Override
@@ -270,19 +264,14 @@ public class MainActivity extends Activity {
     }
 
     private class MyAdapter extends BaseAdapter {
-        private List<Item> items = new ArrayList<Item>();
+        final private List<Item> items = new ArrayList<Item>();
         private LayoutInflater inflater;
 
-        public MyAdapter(Context context) {
+        public MyAdapter(Context context , List<videoObject_xvideo> videoList) {
             inflater = LayoutInflater.from(context);
-
-            items.add(new Item("Red",      "https://redditstatic.s3.amazonaws.com/about/assets/reddit-alien-small.png"));
-            items.add(new Item("Magenta",   "https://i.imgur.com/dmiMtec.png"));
-            items.add(new Item("Dark Gray", "https://redditstatic.s3.amazonaws.com/about/assets/reddit-alien-small.png"));
-            items.add(new Item("Gray",      "https://i.imgur.com/dmiMtec.png"));
-            items.add(new Item("Green",    "https://i.imgur.com/dmiMtec.png"));
-            items.add(new Item("Cyan",      "https://i.imgur.com/dmiMtec.png"));
-            items.add(new Item("Cya2n",     "https://i.imgur.com/dmiMtec.png"));
+            for (videoObject_xvideo xvideo_variable : videoList) {
+                items.add(new Item(xvideo_variable.title, xvideo_variable.picture, xvideo_variable.vid_pg_url ));
+            }
         }
 
         @Override
@@ -317,7 +306,7 @@ public class MainActivity extends Activity {
             picture = (ImageView)v.getTag(R.id.picture);
             name = (TextView)v.getTag(R.id.text);
 
-            Item item = (Item)getItem(i);
+            final Item item = (Item)getItem(i);
 
             //picture.setImageResource(item.drawableId);
 
@@ -325,58 +314,57 @@ public class MainActivity extends Activity {
             imageLoader.displayImage(item.sourceURL,picture);
             name.setText(item.name);
 
+            v.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Toast.makeText(mContext, "Loading Video",
+                            Toast.LENGTH_LONG).show();
+                    new playvideo_xvideo().execute(item.videoSourceURL);
+                }
+            });
+
             return v;
         }
 
         private class Item {
             final String name;
             final String sourceURL;
+            final String videoSourceURL;
 
-            Item(String name, String sourceURL) {
+            Item(String name, String sourceURL, String videoSourceURL) {
                 this.name = name;
                 this.sourceURL = sourceURL;
+                this.videoSourceURL = videoSourceURL;
             }
         }
     }
 
+    class loadData_xvideo extends AsyncTask<String, Void, List<videoObject_xvideo>> {
 
-    // Parse URL and return the stream link on www.xvideos.com
-    public String xvid_source(String url) throws IOException
-    {
-        //gets the line full of junk, turns into html doc for jsoup, and converts into the wanted vid url
-        String line = Jsoup.parse(UrlToHtml(url)).select("embed").attr("flashvars");
-        //makes the vid url into a proper url
-        Pattern pattern = Pattern.compile("(?<=flv_url=).+(?=&url_bigthumb=)");
-        Matcher matcher = pattern.matcher(line);
-        if (matcher.find()) {
-            return matcher.group().replace("%3D", "=").replace("%26", "&").replace("%3F", "?")
-                    .replace("%3B", ";").replace("%2F", "/").replace("%3A", ":");
+        @Override
+        protected List<videoObject_xvideo> doInBackground(String... strings) {
+            List<videoObject_xvideo> kList = Video.xvid_page(strings[0]);
+            //Log.d("doInBackground", kList.get(0).getTitle());
+            return kList;
         }
-        else{
-            return "None";
+
+        void play_video(String streamURL){
+            videoObject_xvideo.playVideo(videoObject_xvideo.getVideoSourceURL(streamURL), mContext);
         }
-    }
 
-    // Function to parse URL to HTML. Should work on all websites
-    public String UrlToHtml(String give_url) throws IOException {
-        URL url = new URL(give_url);
-        URLConnection con = url.openConnection();
-        BufferedReader in = new BufferedReader(new InputStreamReader(
-                con.getInputStream(), "UTF-8"));
-        String inputLine;
-        StringBuilder a = new StringBuilder();
-        while ((inputLine = in.readLine()) != null)
-            a.append(inputLine);
-        in.close();
-        return a.toString();
-    }
-
-    public void play_video(String url) {
-        if (url != "None") {
-            Uri url_to_video = Uri.parse(url);
-            Intent intent = new Intent(Intent.ACTION_VIEW, url_to_video);
-            intent.setDataAndType(url_to_video, "video/*");
-            startActivity(intent);
+        @Override
+        protected void onPostExecute(List<videoObject_xvideo> video_Objects){
+            gridView.setAdapter(new MyAdapter(mContext, video_Objects));
         }
     }
+
+    class playvideo_xvideo extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            System.out.println(strings[0]);
+            videoObject_xvideo.playVideo(videoObject_xvideo.getVideoSourceURL(strings[0]),mContext);
+            return null;
+        }
+    }
+
 }

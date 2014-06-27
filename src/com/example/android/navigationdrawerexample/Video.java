@@ -29,7 +29,9 @@ public class Video {
         String vid = "";
         Pattern pattern = Pattern.compile("/profiles/");
         Matcher matcher;
-        for (Element link : elem){
+        System.out.println("Function ACCESSED");
+        for (Element link : elem) {
+            System.out.println("INSIDE FOR LOOP");
             vid = link.children().select("a").attr("href");
             matcher = pattern.matcher(vid);
             if (!vid.equals("") && !matcher.find()) {
@@ -37,22 +39,31 @@ public class Video {
                 vid_url = "http://www.xvideos.com" + vid;
                 img = link.children().select("img").attr("src");
                 kList.add(new videoObject_xvideo(title, vid_url, img));
+                System.out.println("ADDED");
             }
         }
         return kList;
     }
+
     //sort = relevance, uploaddate, or rating (rating is default)
     //dur = 1-3min, 3-10min, 10min_more, or allduration (allduration is default)
     //date = today, week, month, or all (all is default)
-    public static List xvid_search(String search, String sort, String dur, String date){
-        if (sort.isEmpty()){ sort = "rating";}
-        if (date.isEmpty()){ date = "all";}
-        if (dur.isEmpty()){ dur = "allduration";}
+    public static List xvid_search(String search, String sort, String dur, String date) {
+        if (sort.isEmpty()) {
+            sort = "rating";
+        }
+        if (date.isEmpty()) {
+            date = "all";
+        }
+        if (dur.isEmpty()) {
+            dur = "allduration";
+        }
         String base = "http://www.xvideos.com/?k=";
         String url = base + search + "&sort=" + sort + "&durf" + dur + "&datef=" + date;
         return xvid_page(url);
     }
 }
+
 
 class videoObject {//title, preview image, and landing page (url to html)
     String title;
@@ -82,6 +93,7 @@ class videoObject {//title, preview image, and landing page (url to html)
         URL url;
         try {
             url = new URL(given_url);
+            System.out.println(url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
             System.out.println("bad url given");
@@ -105,7 +117,7 @@ class videoObject {//title, preview image, and landing page (url to html)
         }
     }
 
-    void playVideo(String streamURL, Context mContext){
+    static void playVideo(String streamURL, Context mContext){
         if (!streamURL.equals("")) {
             Uri url_to_video = Uri.parse(streamURL);
             Intent intent = new Intent(Intent.ACTION_VIEW, url_to_video);
@@ -134,6 +146,19 @@ class videoObject_xvideo extends videoObject{
         }
         else{
             vid_url = "";
+        }
+        return vid_url;
+    }
+    static String getVideoSourceURL(String vid_pg_url){
+        //gets the line full of junk, turns into html doc for jsoup, and converts into the wanted vid url
+        String line = Jsoup.parse(parseURLtoHTML(vid_pg_url)).select("embed").attr("flashvars");
+        //makes the vid url into a proper url
+        Pattern pattern = Pattern.compile("(?<=flv_url=).+(?=&url_bigthumb=)");
+        Matcher matcher = pattern.matcher(line);
+        String vid_url = "";
+        if (matcher.find()) {
+            vid_url = matcher.group().replace("%3D", "=").replace("%26", "&").replace("%3F", "?")
+                    .replace("%3B", ";").replace("%2F", "/").replace("%3A", ":");
         }
         return vid_url;
     }
