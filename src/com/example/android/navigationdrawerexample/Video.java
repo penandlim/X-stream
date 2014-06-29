@@ -264,6 +264,51 @@ public class Video {
         return current_url;
     }
 
+    public static List<videoObject_porn> porn_page(String url) {
+        current_url = url;
+        Document info = Jsoup.parse(videoObject.parseURLtoHTML(url));
+        Elements elem = info.select("ul[class=listThumbs]").select("li");
+        List<videoObject_porn> kList = new ArrayList<videoObject_porn>();
+        String vid, title, img;
+        for (Element link : elem){
+            vid = link.children().select("a").attr("href");
+            if (!vid.equals("")) {
+                title = link.children().select("a[class=title]").attr("title");
+                img = link.children().select("img").attr("src");
+                kList.add(new videoObject_porn(title, "http://www.porn.com" + vid, img));
+            }
+        }
+        return kList;
+    }
+
+    //d(date), v(views), f(popularity), r(rating), or ""(default is most relevant)
+    //1(today), 7(week), 30(month), or ""(default is all time)
+    public static String porn_search(String search, String sort, String time){
+        String base = "http://www.porn.com/search?q=";
+        search = search.replace(" ", "+");
+        current_url = base + search + "&o=" + sort + time;
+        return current_url;
+    }
+
+    //NorP is (-1) or (1), for going to next or previous
+    public static String porn_npPage(int NorP) {
+        if(page_number == 1 && NorP<0){
+            NorP=0;
+        }
+
+        if (current_url.contains("p=")){
+            current_url = current_url.replaceAll("p=\\d+", "p=" + (page_number + NorP));
+        }
+        else if (current_url.equals("http://www.porn.com/")){
+            current_url = "http://www.porn.com/videos?p=" + (page_number + NorP);
+        }
+        else{
+            current_url += "&p=" + (page_number + NorP);
+        }
+        page_number +=NorP;
+        return current_url;
+    }
+
 
 }
 
@@ -434,6 +479,23 @@ class videoObject_pornhub extends videoObject {
         Matcher mat = pat.matcher(line);
         mat.find();
         vid_url = mat.group();
+        return vid_url;
+    }
+}
+
+class videoObject_porn extends videoObject {
+
+    videoObject_porn(String tit, String url, String pic) {
+        super(tit, url, pic);
+    }
+
+    String getVideoSourceURL() {
+        vid_url = "";
+        String line = Jsoup.parse(parseURLtoHTML(vid_pg_url)).select("script").html();
+        Pattern pattern = Pattern.compile("(?<=file:\")\\S+(?=\")");
+        Matcher matcher = pattern.matcher(line);
+        matcher.find();
+        vid_url = matcher.group();
         return vid_url;
     }
 }
