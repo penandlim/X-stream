@@ -181,6 +181,90 @@ public class Video {
         return current_url;
     }
 
+    public static List<videoObject_xhamster> xhamster_page(String url) {
+        current_url = url;
+        Document info = Jsoup.parse(videoObject.parseURLtoHTML(url));
+        Elements elem = info.select("div[class = video]").select("a");
+        List<videoObject_xhamster> kList = new ArrayList<videoObject_xhamster>();
+        String vid, title, img;
+        for (Element link : elem){
+            vid = link.attr("href");
+            if (!vid.equals("")) {
+                title = link.children().select("u").attr("title");
+                if (title.equals(""))
+                    title = link.attr("title");
+                img = link.children().select("img").attr("src");
+                kList.add(new videoObject_xhamster(title, vid, img));
+            }
+        }
+        return kList;
+    }
+
+    public static String xhamster_search(String search){
+        String base = "http://xhamster.com/search.php?";
+        search = search.replace(" ", "+");
+        current_url = base + "q=" + search;
+        return current_url;
+    }
+
+    //NorP is (-1) or (1), for going to next or previous
+    public static String xhamster_npPage(int NorP) {
+        if(page_number == 1 && NorP<0){
+            NorP=0;
+        }
+
+        if (current_url.contains("page")){
+            current_url = current_url.replaceAll("page=\\d+", "page=" + (page_number + NorP));
+        }
+        else{
+            current_url = "http://xhamster.com/new/" + (page_number + NorP) + ".html";
+        }
+        page_number +=NorP;
+        return current_url;
+    }
+
+    public static List<videoObject_pornhub> pornhub_page(String url) {
+        current_url = url;
+        Document info = Jsoup.parse(videoObject.parseURLtoHTML(url));
+        Elements elem = info.select("li[class=videoblock]");
+        List<videoObject_pornhub> kList = new ArrayList<videoObject_pornhub>();
+        String vid, title, img;
+        for (Element link : elem){
+            vid = link.children().select("a").attr("href");
+            if (!vid.equals("")) {
+                title = link.children().select("a").attr("title");
+                img = link.children().select("img").attr("data-smallthumb");
+                kList.add(new videoObject_pornhub(title, "http://www.pornhub.com/" + vid, img));
+            }
+        }
+        return kList;
+    }
+
+    //lg(longest), tr(top rated), mv(most viewed), mr(most recent), or ""(default is most relevant)
+    public static String pornhub_search(String search, String sort){
+        String base = "http://www.pornhub.com/video/search?search=";
+        search = search.replace(" ", "+");
+        current_url = base + search + "&o=" + sort;
+        return current_url;
+    }
+
+    //NorP is (-1) or (1), for going to next or previous
+    public static String pornhub_npPage(int NorP) {
+        if(page_number == 1 && NorP<0){
+            NorP=0;
+        }
+
+        if (current_url.contains("page")){
+            current_url = current_url.replaceAll("page=\\d+", "page=" + (page_number + NorP));
+        }
+        else{
+            current_url += "&page=" + (page_number + NorP);
+        }
+        page_number +=NorP;
+        return current_url;
+    }
+
+
 }
 
 
@@ -318,5 +402,38 @@ class videoObject_redtube extends videoObject {
                     .replace("%3B", ";").replace("%2F", "/").replace("%3A", ":");
         }
         return vid_url_2;
+    }
+}
+
+class videoObject_xhamster extends videoObject {
+
+    videoObject_xhamster(String tit, String url, String pic) {
+        super(tit, url, pic);
+    }
+
+    String getVideoSourceURL(){
+        vid_url = Jsoup.parse(parseURLtoHTML(vid_pg_url)).select("video").attr("file");
+        return vid_url;
+    }
+}
+
+class videoObject_pornhub extends videoObject {
+
+    videoObject_pornhub(String tit, String url, String pic) {
+        super(tit, url, pic);
+    }
+
+    String getVideoSourceURL(){
+        vid_url = "";
+        String emb_url = Jsoup.parse(parseURLtoHTML(vid_pg_url)).select("textarea[onclick = this.select()]").text();
+        Pattern pattern = Pattern.compile("(?<=src=\")\\S+(?=\")");
+        Matcher matcher = pattern.matcher(emb_url);
+        matcher.find();
+        String line = Jsoup.parse(parseURLtoHTML(matcher.group())).select("script").html();
+        Pattern pat = Pattern.compile("(?<=\\ssrc\\s\\s:\\s')\\S+(?=')");
+        Matcher mat = pat.matcher(line);
+        mat.find();
+        vid_url = mat.group();
+        return vid_url;
     }
 }
