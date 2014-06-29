@@ -29,6 +29,21 @@ public class Video {
         page_number=1;
     }
 
+    public static String npPage(int NorP){
+        Pattern pattern = Pattern.compile("(?>\\.)\\S+(?>\\.)");
+        Matcher match = pattern.matcher(current_url);
+        String web = "";
+        if (match.find())
+            web = match.group();
+        if (web.equals("xvideos")) return xvid_npPage(NorP);
+        if (web.equals("xnxx")) return xnxx_npPage(NorP);
+        if (web.equals("redtube")) return redtube_npPage(NorP);
+        if (web.equals("xhamster")) return xhamster_npPage(NorP);
+        if (web.equals("pornhub")) return pornhub_npPage(NorP);
+        if (web.equals("porn")) return porn_npPage(NorP);
+        else return current_url;
+    }
+
     public static List<videoObject_xvideo> xvid_page(String url) {
         current_url = url;
         Document info = Jsoup.parse(videoObject.parseURLtoHTML(url));
