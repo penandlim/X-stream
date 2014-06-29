@@ -48,11 +48,11 @@ public class Video {
         }
         return kList;
     }
-    //sort = relevance, uploaddate, or rating (rating is default)
+    //sort = relevance, uploaddate, or rating (relevance is default)
     //dur = 1-3min, 3-10min, 10min_more, or allduration (allduration is default)
     //date = today, week, month, or all (all is default)
     public static String xvid_search(String search, String sort, String dur, String date){
-        if (sort.isEmpty()) sort = "rating";
+        if (sort.isEmpty()) sort = "relevance";
         if (date.isEmpty()) date = "all";
         if (dur.isEmpty()) dur = "allduration";
         search = search.replace(" ", "+");
@@ -100,13 +100,13 @@ public class Video {
         return kList;
     }
 
-    //sort = relevance, uploaddate, or rating (rating is default)
+    //sort = relevance, uploaddate, or rating (relevance is default)
     //dur = 1-3min, 3-10min, 10min_more, or allduration (allduration is default)
     //date = today, week, month, or all (all is default)
     public static String xnxx_search(String search, String sort, String dur, String date){
         if (sort.isEmpty()) sort = "rating";
         if (date.isEmpty()) date = "all";
-        if (dur.isEmpty()) dur = "allduration";
+        if (dur.isEmpty()) dur = "relevance";
         String base = "http://www.xnxx.com/?k=";
         search = search.replace(" ", "+");
         current_url = base + search + "&sort=" + sort + "&durf" + dur + "&datef=" + date;
@@ -460,6 +460,12 @@ class videoObject_xhamster extends videoObject {
         vid_url = Jsoup.parse(parseURLtoHTML(vid_pg_url)).select("video").attr("file");
         return vid_url;
     }
+
+    static String getVideoSourceURL(String vid_pg_url_2){
+        String vid_url_2="";
+        vid_url_2 = Jsoup.parse(parseURLtoHTML(vid_pg_url_2)).select("video").attr("file");
+        return vid_url_2;
+    }
 }
 
 class videoObject_pornhub extends videoObject {
@@ -481,6 +487,20 @@ class videoObject_pornhub extends videoObject {
         vid_url = mat.group();
         return vid_url;
     }
+
+    static String getVideoSourceURL(String vid_pg_url_2){
+        String vid_url_2 = "";
+        String emb_url = Jsoup.parse(parseURLtoHTML(vid_pg_url_2)).select("textarea[onclick = this.select()]").text();
+        Pattern pattern = Pattern.compile("(?<=src=\")\\S+(?=\")");
+        Matcher matcher = pattern.matcher(emb_url);
+        matcher.find();
+        String line = Jsoup.parse(parseURLtoHTML(matcher.group())).select("script").html();
+        Pattern pat = Pattern.compile("(?<=\\ssrc\\s\\s:\\s')\\S+(?=')");
+        Matcher mat = pat.matcher(line);
+        mat.find();
+        vid_url_2 = mat.group();
+        return vid_url_2;
+    }
 }
 
 class videoObject_porn extends videoObject {
@@ -497,5 +517,15 @@ class videoObject_porn extends videoObject {
         matcher.find();
         vid_url = matcher.group();
         return vid_url;
+    }
+
+    static String getVideoSourceURL(String vid_pg_url_2) {
+        String vid_url_2 = "";
+        String line = Jsoup.parse(parseURLtoHTML(vid_pg_url_2)).select("script").html();
+        Pattern pattern = Pattern.compile("(?<=file:\")\\S+(?=\")");
+        Matcher matcher = pattern.matcher(line);
+        matcher.find();
+        vid_url_2 = matcher.group();
+        return vid_url_2;
     }
 }

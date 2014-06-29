@@ -84,6 +84,7 @@ public class MainActivity extends Activity {
     private String[] mPlanetTitles;
     public static Context mContext;
     private static GridView gridView;
+    public static Video video;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,7 +212,7 @@ public class MainActivity extends Activity {
                         if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                             InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                             in.hideSoftInputFromWindow(editText.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
-                            new loadData_xvideo().execute(Video.xvid_search(editText.getText().toString(), "", "", ""));
+                            new loadData_xvideo().execute(video.xvid_search(editText.getText().toString(), "", "", ""));
                             return true;
                         }
                         return false;
@@ -226,7 +227,7 @@ public class MainActivity extends Activity {
                         if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                             InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                             in.hideSoftInputFromWindow(editText.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
-                            new loadData_xnxx().execute(Video.xnxx_search(editText.getText().toString(), "", "", ""));
+                            new loadData_xnxx().execute(video.xnxx_search(editText.getText().toString(), "", "", ""));
                             return true;
                         }
                         return false;
@@ -241,7 +242,52 @@ public class MainActivity extends Activity {
                         if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                             InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                             in.hideSoftInputFromWindow(editText.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
-                            new loadData_redtube().execute(Video.redtube_search(editText.getText().toString(), ""));
+                            new loadData_redtube().execute(video.redtube_search(editText.getText().toString(), ""));
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+                break;
+            case 3 :
+                new loadData_pornhub().execute("http://www.pornhub.com");
+                editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId,KeyEvent event) {
+                        if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                            InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            in.hideSoftInputFromWindow(editText.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+                            new loadData_pornhub().execute(video.pornhub_search(editText.getText().toString(), ""));
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+                break;
+            case 4 :
+                new loadData_porn().execute("http://www.porn.com");
+                editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId,KeyEvent event) {
+                        if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                            InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            in.hideSoftInputFromWindow(editText.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+                            new loadData_porn().execute(video.porn_search(editText.getText().toString(), "",""));
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+                break;
+            case 5 :
+                new loadData_xhamster().execute("http://www.xhamster.com");
+                editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId,KeyEvent event) {
+                        if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                            InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            in.hideSoftInputFromWindow(editText.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+                            new loadData_xhamster().execute(video.xhamster_search(editText.getText().toString()));
                             return true;
                         }
                         return false;
@@ -301,7 +347,7 @@ public class MainActivity extends Activity {
 
         @Override
         protected List<videoObject_xvideo> doInBackground(String... strings) {
-            List<videoObject_xvideo> kList = Video.xvid_page(strings[0]);
+            List<videoObject_xvideo> kList = video.xvid_page(strings[0]);
             //Log.d("doInBackground", kList.get(0).getTitle());
             return kList;
         }
@@ -333,7 +379,7 @@ public class MainActivity extends Activity {
 
         @Override
         protected List<videoObject_xvideo> doInBackground(String... strings) {
-            List<videoObject_xvideo> kList = Video.xnxx_page(strings[0]);
+            List<videoObject_xvideo> kList = video.xnxx_page(strings[0]);
             //Log.d("doInBackground", kList.get(0).getTitle());
             return kList;
         }
@@ -365,7 +411,7 @@ public class MainActivity extends Activity {
 
         @Override
         protected List<videoObject_redtube> doInBackground(String... strings) {
-            List<videoObject_redtube> kList = Video.redtube_page(strings[0]);
+            List<videoObject_redtube> kList = video.redtube_page(strings[0]);
             //Log.d("doInBackground", kList.get(0).getTitle());
             return kList;
         }
@@ -395,4 +441,105 @@ public class MainActivity extends Activity {
         }
     }
 
+    public class loadData_pornhub extends AsyncTask<String, Void, List<videoObject_pornhub>> {
+
+        @Override
+        protected List<videoObject_pornhub> doInBackground(String... strings) {
+            List<videoObject_pornhub> kList = video.pornhub_page(strings[0]);
+            //Log.d("doInBackground", kList.get(0).getTitle());
+            return kList;
+        }
+
+        @Override
+        protected void onPostExecute(final List<videoObject_pornhub> video_Objects){
+            gridView.setAdapter(new GridAdapter_pornhub(mContext, video_Objects, imageLoader));
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Toast.makeText(mContext, "Loading video...",
+                            Toast.LENGTH_LONG).show();
+                    new playvideo_pornhub().execute(video_Objects.get(i).getVideoURL());
+                }
+
+                class playvideo_pornhub extends AsyncTask<String, Void, Void> {
+
+                    @Override
+                    protected Void doInBackground(String... strings) {
+                        videoObject_pornhub.playVideo(videoObject_pornhub.getVideoSourceURL(strings[0]), mContext);
+                        return null;
+                    }
+                }
+
+
+            });
+        }
+    }
+
+    public class loadData_porn extends AsyncTask<String, Void, List<videoObject_porn>> {
+
+        @Override
+        protected List<videoObject_porn> doInBackground(String... strings) {
+            List<videoObject_porn> kList = video.porn_page(strings[0]);
+            //Log.d("doInBackground", kList.get(0).getTitle());
+            return kList;
+        }
+
+        @Override
+        protected void onPostExecute(final List<videoObject_porn> video_Objects){
+            gridView.setAdapter(new GridAdapter_porn(mContext, video_Objects, imageLoader));
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Toast.makeText(mContext, "Loading video...",
+                            Toast.LENGTH_LONG).show();
+                    new playvideo_porn().execute(video_Objects.get(i).getVideoURL());
+                }
+
+                class playvideo_porn extends AsyncTask<String, Void, Void> {
+
+                    @Override
+                    protected Void doInBackground(String... strings) {
+                        videoObject_porn.playVideo(videoObject_porn.getVideoSourceURL(strings[0]), mContext);
+                        return null;
+                    }
+                }
+
+
+            });
+        }
+    }
+
+    public class loadData_xhamster extends AsyncTask<String, Void, List<videoObject_xhamster>> {
+
+        @Override
+        protected List<videoObject_xhamster> doInBackground(String... strings) {
+            List<videoObject_xhamster> kList = video.xhamster_page(strings[0]);
+            //Log.d("doInBackground", kList.get(0).getTitle());
+            return kList;
+        }
+
+        @Override
+        protected void onPostExecute(final List<videoObject_xhamster> video_Objects){
+            gridView.setAdapter(new GridAdapter_xhamster(mContext, video_Objects, imageLoader));
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Toast.makeText(mContext, "Loading video...",
+                            Toast.LENGTH_LONG).show();
+                    new playvideo_xhamster().execute(video_Objects.get(i).getVideoURL());
+                }
+
+                class playvideo_xhamster extends AsyncTask<String, Void, Void> {
+
+                    @Override
+                    protected Void doInBackground(String... strings) {
+                        videoObject_xhamster.playVideo(videoObject_xhamster.getVideoSourceURL(strings[0]), mContext);
+                        return null;
+                    }
+                }
+
+
+            });
+        }
+    }
 }
