@@ -81,7 +81,7 @@ public class Video {
         if (dur.isEmpty()) dur = "allduration";
         search = search.replace(" ", "+");
         String base = "http://www.xvideos.com/?k=";
-        current_url = base + search + "&sort=" + sort + "&durf" + dur + "&datef=" + date;
+        current_url = base + search + "&sort=" + sort + "&durf=" + dur + "&datef=" + date;
         return current_url;
     }
 
@@ -137,7 +137,7 @@ public class Video {
         if (dur.isEmpty()) dur = "allduration";
         String base = "http://www.xnxx.com/?k=";
         search = search.replace(" ", "+");
-        current_url = base + search + "&sort=" + sort + "&durf" + dur + "&datef=" + date;
+        current_url = base + search + "&sort=" + sort + "&durf=" + dur + "&datef=" + date;
         return current_url;
     }
 
