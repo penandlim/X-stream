@@ -39,6 +39,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -91,7 +92,14 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = this;
-        ImageLoaderConfiguration config = ImageLoaderConfiguration.createDefault(mContext);
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .showImageOnLoading(R.drawable.loading)
+                .build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(mContext)
+                .defaultDisplayImageOptions(options)
+                .build();
+        //ImageLoaderConfiguration config = ImageLoaderConfiguration.createDefault(mContext);
         imageLoader = ImageLoader.getInstance();
         imageLoader.init(config);
 
@@ -199,10 +207,12 @@ public class MainActivity extends Activity {
     }
 
     private void selectItem(int position) {
-
+        imageLoader.clearMemoryCache();
         Bundle args = new Bundle();
         System.out.println(position);
         final EditText editText = (EditText) findViewById(R.id.search_button);
+        Toast.makeText(mContext, "Page 1",
+                Toast.LENGTH_LONG).show();
         switch (position){
             case 0 :
                 new loadData_xvideo().execute("http://www.xvideos.com");
