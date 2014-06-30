@@ -258,7 +258,7 @@ public class Video {
     //lg(longest), tr(top rated), mv(most viewed), mr(most recent), or ""(default is most relevant)
     public static String pornhub_search(String search, String sort){
         String base = "http://www.pornhub.com/video/search?search=";
-        search = search.replace(" ", "+");
+        search = search.replace(" ", "+").toLowerCase();
         current_url = base + search + "&o=" + sort;
         return current_url;
     }
