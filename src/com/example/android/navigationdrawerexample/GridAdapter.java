@@ -89,10 +89,8 @@ class GridAdapter_xvideos extends GridAdapter {
 
     public GridAdapter_xvideos(Context context, List<videoObject_xvideo> videoList, ImageLoader mimageLoader) {
         super(context, mimageLoader);
-        int i = 0;
         for (videoObject_xvideo videoObject_variable : videoList) {
             items.add(new Item(videoObject_variable.title, videoObject_variable.picture, videoObject_variable.vid_pg_url ));
-            i++;
         }
     }
 }

@@ -3,6 +3,7 @@ package com.example.android.navigationdrawerexample;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -29,7 +30,9 @@ public class Video {
         page_number=1;
     }
 
-    public static int getPage_number() {return page_number;}
+    public static int getPage_number() {
+        Log.e("current_url", current_url);
+        return page_number;}
 
     public static String npPage(int NorP){
         Pattern pattern = Pattern.compile("(?<=\\.)\\S+(?=\\.)");
