@@ -359,10 +359,21 @@ public class MainActivity extends Activity {
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    Toast.makeText(mContext, "Loading video...",
-                            Toast.LENGTH_LONG).show();
-
-                    new playvideo_xvideo().execute(video_Objects.get(i).getVideoURL());
+                    if(video_Objects.get(i).getVideoURL().equals("next")) {
+                        Toast.makeText(mContext, "Next Page",
+                                Toast.LENGTH_LONG).show();
+                        new loadData_xvideo().execute(video.npPage(1));
+                    }
+                    else if (video_Objects.get(i).getVideoURL().equals("prev")) {
+                        Toast.makeText(mContext, "Previous Page",
+                                Toast.LENGTH_LONG).show();
+                        new loadData_xvideo().execute(video.npPage(-1));
+                    }
+                    else{
+                        Toast.makeText(mContext, "Loading video...",
+                                Toast.LENGTH_LONG).show();
+                        new playvideo_xvideo().execute(video_Objects.get(i).getVideoURL());
+                    }
                 }
                 class playvideo_xvideo extends AsyncTask<String, Void, Void> {
 

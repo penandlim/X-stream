@@ -42,6 +42,7 @@ public class Video {
         if (web.equals("pornhub")) return pornhub_npPage(NorP);
         if (web.equals("porn")) return porn_npPage(NorP);
         else return current_url;
+
     }
 
     public static List<videoObject_xvideo> xvid_page(String url) {
