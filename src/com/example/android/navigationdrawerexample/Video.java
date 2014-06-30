@@ -153,7 +153,10 @@ public class Video {
                 current_url += "&p=" + (page+NorP);
         }
         else{
-            current_url = "http://www.xnxx.com/home/" + (page + NorP);
+            if (0 == (page_number + NorP))
+                current_url = "http://www.xnxx.com/";
+            else
+                current_url = "http://www.xnxx.com/home/" + (page + NorP);
         }
         page_number +=NorP;
         return current_url;
@@ -234,7 +237,7 @@ public class Video {
     }
 
     public static String xhamster_search(String search){
-        String base = "http://xhamster.com/search.php?";
+        String base = "http://www.xhamster.com/search.php?";
         search = search.replace(" ", "+");
         current_url = base + "q=" + search;
         return current_url;
@@ -250,7 +253,7 @@ public class Video {
             current_url = current_url.replaceAll("page=\\d+", "page=" + (page_number + NorP));
         }
         else{
-            current_url = "http://xhamster.com/new/" + (page_number + NorP) + ".html";
+            current_url = "http://www.xhamster.com/new/" + (page_number + NorP) + ".html";
         }
         page_number +=NorP;
         return current_url;
@@ -267,7 +270,7 @@ public class Video {
             if (!vid.equals("")) {
                 title = link.children().select("a").attr("title");
                 img = link.children().select("img").attr("data-smallthumb");
-                kList.add(new videoObject_pornhub(title, "http://www.pornhub.com/" + vid, img));
+                kList.add(new videoObject_pornhub(title, "http://www.pornhub.com" + vid, img));
             }
         }
         if (kList.size() % 2 == 1)
@@ -293,6 +296,9 @@ public class Video {
 
         if (current_url.contains("page")){
             current_url = current_url.replaceAll("page=\\d+", "page=" + (page_number + NorP));
+        }
+        else if (!current_url.contains("com/")){
+            current_url = "http://www.pornhub.com/video?page=" + (page_number + NorP);
         }
         else{
             current_url += "&page=" + (page_number + NorP);
@@ -340,7 +346,7 @@ public class Video {
         if (current_url.contains("p=")){
             current_url = current_url.replaceAll("p=\\d+", "p=" + (page_number + NorP));
         }
-        else if (current_url.equals("http://www.porn.com/")){
+        else if (current_url.equals("http://www.porn.com/") || current_url.equals("http://www.porn.com")){
             current_url = "http://www.porn.com/videos?p=" + (page_number + NorP);
         }
         else{
