@@ -84,7 +84,7 @@ public class MainActivity extends Activity {
     private String[] mPlanetTitles;
     public static Context mContext;
     private static GridView gridView;
-    public static Video video;
+    public Video video;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -360,14 +360,14 @@ public class MainActivity extends Activity {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     if(video_Objects.get(i).getVideoURL().equals("next")) {
-                        Toast.makeText(mContext, "Next Page",
-                                Toast.LENGTH_LONG).show();
                         new loadData_xvideo().execute(video.npPage(1));
+                        Toast.makeText(mContext, "Page " + video.getPage_number(),
+                                Toast.LENGTH_LONG).show();
                     }
                     else if (video_Objects.get(i).getVideoURL().equals("prev")) {
-                        Toast.makeText(mContext, "Previous Page",
-                                Toast.LENGTH_LONG).show();
                         new loadData_xvideo().execute(video.npPage(-1));
+                        Toast.makeText(mContext, "Page " + video.getPage_number(),
+                                Toast.LENGTH_LONG).show();
                     }
                     else{
                         Toast.makeText(mContext, "Loading video...",

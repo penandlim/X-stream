@@ -22,12 +22,14 @@ import java.util.regex.Pattern;
 
 public class Video {
 
-    static private int page_number = 1;
-    static private String current_url;
+    private static int page_number = 1;
+    private static String current_url;
 
     public static void reset_page(){
         page_number=1;
     }
+
+    public static int getPage_number() {return page_number;}
 
     public static String npPage(int NorP){
         Pattern pattern = Pattern.compile("(?<=\\.)\\S+(?=\\.)");
@@ -42,7 +44,6 @@ public class Video {
         if (web.equals("pornhub")) return pornhub_npPage(NorP);
         if (web.equals("porn")) return porn_npPage(NorP);
         else return current_url;
-
     }
 
     public static List<videoObject_xvideo> xvid_page(String url) {
