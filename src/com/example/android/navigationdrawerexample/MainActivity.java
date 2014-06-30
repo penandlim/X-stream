@@ -309,6 +309,7 @@ public class MainActivity extends Activity {
         if (position !=8) {
             mDrawerList.setItemChecked(position, true);
             setTitle(mPlanetTitles[position]);
+            editText.setText("");
         }
         else
             mDrawerList.setItemChecked(position, false);
