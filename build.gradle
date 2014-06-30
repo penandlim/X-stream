@@ -6,10 +6,10 @@ buildscript {
         classpath 'com.android.tools.build:gradle:0.12.+'
     }
 }
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 dependencies {
-    compile "com.android.support:support-v4:19.1.0+"
+    compile "com.android.support:support-v4:20.0.0+"
     compile fileTree(dir: 'libs', include: '*.jar')
 }
 

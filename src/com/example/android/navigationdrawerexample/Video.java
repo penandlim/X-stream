@@ -61,6 +61,10 @@ public class Video {
                 kList.add(new videoObject_xvideo(title, "http://www.xvideos.com" + vid, img));
             }
         }
+        if (kList.size() % 2 == 1)
+            kList.add(new videoObject_xvideo("", "",""));
+        kList.add(new videoObject_xvideo("","prev","drawable://" + R.drawable.arrow_prev));
+        kList.add(new videoObject_xvideo("","next","drawable://" + R.drawable.arrow_next));
         return kList;
     }
     //sort = relevance, uploaddate, or rating (relevance is default)
@@ -112,6 +116,10 @@ public class Video {
                 kList.add(new videoObject_xvideo(title, vid, img));
             }
         }
+        if (kList.size() % 2 == 1)
+            kList.add(new videoObject_xvideo("", "",""));
+        kList.add(new videoObject_xvideo("","prev","drawable://" + R.drawable.arrow_prev));
+        kList.add(new videoObject_xvideo("","next","drawable://" + R.drawable.arrow_next));
         return kList;
     }
 
@@ -163,6 +171,10 @@ public class Video {
                 kList.add(new videoObject_redtube(title, "http://www.redtube.com" + vid, img));
             }
         }
+        if (kList.size() % 2 == 1)
+            kList.add(new videoObject_redtube("","",""));
+        kList.add(new videoObject_redtube("","prev","drawable://" + R.drawable.arrow_prev));
+        kList.add(new videoObject_redtube("","next","drawable://" + R.drawable.arrow_next));
         return kList;
     }
 
@@ -212,6 +224,10 @@ public class Video {
                 kList.add(new videoObject_xhamster(title, vid, img));
             }
         }
+        if (kList.size() % 2 == 1)
+            kList.add(new videoObject_xhamster("","",""));
+        kList.add(new videoObject_xhamster("","prev","drawable://" + R.drawable.arrow_prev));
+        kList.add(new videoObject_xhamster("","next","drawable://" + R.drawable.arrow_next));
         return kList;
     }
 
@@ -252,6 +268,10 @@ public class Video {
                 kList.add(new videoObject_pornhub(title, "http://www.pornhub.com/" + vid, img));
             }
         }
+        if (kList.size() % 2 == 1)
+            kList.add(new videoObject_pornhub("","",""));
+        kList.add(new videoObject_pornhub("","prev","drawable://" + R.drawable.arrow_prev));
+        kList.add(new videoObject_pornhub("","next","drawable://" + R.drawable.arrow_next));
         return kList;
     }
 
@@ -293,6 +313,10 @@ public class Video {
                 kList.add(new videoObject_porn(title, "http://www.porn.com" + vid, img));
             }
         }
+        if (kList.size() % 2 == 1)
+            kList.add(new videoObject_porn("","",""));
+        kList.add(new videoObject_porn("","prev","drawable://" + R.drawable.arrow_prev));
+        kList.add(new videoObject_porn("","next","drawable://" + R.drawable.arrow_next));
         return kList;
     }
 

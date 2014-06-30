@@ -361,6 +361,7 @@ public class MainActivity extends Activity {
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     Toast.makeText(mContext, "Loading video...",
                             Toast.LENGTH_LONG).show();
+
                     new playvideo_xvideo().execute(video_Objects.get(i).getVideoURL());
                 }
                 class playvideo_xvideo extends AsyncTask<String, Void, Void> {
