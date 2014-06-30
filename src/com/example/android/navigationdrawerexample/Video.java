@@ -119,9 +119,9 @@ public class Video {
     //dur = 1-3min, 3-10min, 10min_more, or allduration (allduration is default)
     //date = today, week, month, or all (all is default)
     public static String xnxx_search(String search, String sort, String dur, String date){
-        if (sort.isEmpty()) sort = "rating";
+        if (sort.isEmpty()) sort = "relevance";
         if (date.isEmpty()) date = "all";
-        if (dur.isEmpty()) dur = "relevance";
+        if (dur.isEmpty()) dur = "allduration";
         String base = "http://www.xnxx.com/?k=";
         search = search.replace(" ", "+");
         current_url = base + search + "&sort=" + sort + "&durf" + dur + "&datef=" + date;
