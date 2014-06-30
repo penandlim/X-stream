@@ -30,7 +30,7 @@ public class Video {
     }
 
     public static String npPage(int NorP){
-        Pattern pattern = Pattern.compile("(?>\\.)\\S+(?>\\.)");
+        Pattern pattern = Pattern.compile("(?<=\\.)\\S+(?=\\.)");
         Matcher match = pattern.matcher(current_url);
         String web = "";
         if (match.find())
