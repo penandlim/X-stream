@@ -310,6 +310,7 @@ public class MainActivity extends Activity {
             mDrawerList.setItemChecked(position, true);
             setTitle(mPlanetTitles[position]);
             editText.setText("");
+            video.reset_page();
         }
         else
             mDrawerList.setItemChecked(position, false);
@@ -403,9 +404,21 @@ public class MainActivity extends Activity {
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    Toast.makeText(mContext, "Loading video...",
-                            Toast.LENGTH_LONG).show();
-                    new playvideo_xvideo().execute(video_Objects.get(i).getVideoURL());
+                    if(video_Objects.get(i).getVideoURL().equals("next")) {
+                        new loadData_xnxx().execute(video.npPage(1));
+                        Toast.makeText(mContext, "Page " + video.getPage_number(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                    else if (video_Objects.get(i).getVideoURL().equals("prev")) {
+                        new loadData_xnxx().execute(video.npPage(-1));
+                        Toast.makeText(mContext, "Page " + video.getPage_number(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        Toast.makeText(mContext, "Loading video...",
+                                Toast.LENGTH_LONG).show();
+                        new playvideo_xvideo().execute(video_Objects.get(i).getVideoURL());
+                    }
                 }
 
                 class playvideo_xvideo extends AsyncTask<String, Void, Void> {
@@ -435,9 +448,21 @@ public class MainActivity extends Activity {
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    Toast.makeText(mContext, "Loading video...",
-                            Toast.LENGTH_LONG).show();
-                    new playvideo_redtube().execute(video_Objects.get(i).getVideoURL());
+                    if(video_Objects.get(i).getVideoURL().equals("next")) {
+                        new loadData_redtube().execute(video.npPage(1));
+                        Toast.makeText(mContext, "Page " + video.getPage_number(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                    else if (video_Objects.get(i).getVideoURL().equals("prev")) {
+                        new loadData_redtube().execute(video.npPage(-1));
+                        Toast.makeText(mContext, "Page " + video.getPage_number(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        Toast.makeText(mContext, "Loading video...",
+                                Toast.LENGTH_LONG).show();
+                        new playvideo_redtube().execute(video_Objects.get(i).getVideoURL());
+                    }
                 }
 
                 class playvideo_redtube extends AsyncTask<String, Void, Void> {
@@ -469,9 +494,21 @@ public class MainActivity extends Activity {
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    Toast.makeText(mContext, "Loading video...",
-                            Toast.LENGTH_LONG).show();
-                    new playvideo_pornhub().execute(video_Objects.get(i).getVideoURL());
+                    if(video_Objects.get(i).getVideoURL().equals("next")) {
+                        new loadData_pornhub().execute(video.npPage(1));
+                        Toast.makeText(mContext, "Page " + video.getPage_number(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                    else if (video_Objects.get(i).getVideoURL().equals("prev")) {
+                        new loadData_pornhub().execute(video.npPage(-1));
+                        Toast.makeText(mContext, "Page " + video.getPage_number(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        Toast.makeText(mContext, "Loading video...",
+                                Toast.LENGTH_LONG).show();
+                        new playvideo_pornhub().execute(video_Objects.get(i).getVideoURL());
+                    }
                 }
 
                 class playvideo_pornhub extends AsyncTask<String, Void, Void> {
@@ -503,9 +540,21 @@ public class MainActivity extends Activity {
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    Toast.makeText(mContext, "Loading video...",
-                            Toast.LENGTH_LONG).show();
-                    new playvideo_porn().execute(video_Objects.get(i).getVideoURL());
+                    if(video_Objects.get(i).getVideoURL().equals("next")) {
+                        new loadData_porn().execute(video.npPage(1));
+                        Toast.makeText(mContext, "Page " + video.getPage_number(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                    else if (video_Objects.get(i).getVideoURL().equals("prev")) {
+                        new loadData_porn().execute(video.npPage(-1));
+                        Toast.makeText(mContext, "Page " + video.getPage_number(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        Toast.makeText(mContext, "Loading video...",
+                                Toast.LENGTH_LONG).show();
+                        new playvideo_porn().execute(video_Objects.get(i).getVideoURL());
+                    }
                 }
 
                 class playvideo_porn extends AsyncTask<String, Void, Void> {
@@ -537,9 +586,21 @@ public class MainActivity extends Activity {
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    Toast.makeText(mContext, "Loading video...",
-                            Toast.LENGTH_LONG).show();
-                    new playvideo_xhamster().execute(video_Objects.get(i).getVideoURL());
+                    if(video_Objects.get(i).getVideoURL().equals("next")) {
+                        new loadData_xhamster().execute(video.npPage(1));
+                        Toast.makeText(mContext, "Page " + video.getPage_number(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                    else if (video_Objects.get(i).getVideoURL().equals("prev")) {
+                        new loadData_xhamster().execute(video.npPage(-1));
+                        Toast.makeText(mContext, "Page " + video.getPage_number(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        Toast.makeText(mContext, "Loading video...",
+                                Toast.LENGTH_LONG).show();
+                        new playvideo_xhamster().execute(video_Objects.get(i).getVideoURL());
+                    }
                 }
 
                 class playvideo_xhamster extends AsyncTask<String, Void, Void> {
