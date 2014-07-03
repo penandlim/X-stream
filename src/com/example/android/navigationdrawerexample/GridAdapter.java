@@ -64,10 +64,12 @@ public class GridAdapter extends BaseAdapter {
         final Item item = (Item)getItem(i);
         imageLoader.displayImage(item.sourceURL,picture);
         assert name != null;
-        if (!item.name.equals(""))
+        if (!item.name.equals("")) {
             name.setText(item.name);
+            name.setVisibility(View.VISIBLE);
+        }
         else
-            name.setVisibility(View.GONE);
+            name.setVisibility(View.INVISIBLE);
         vsourceURL = item.videoSourceURL;
         return v;
     }
