@@ -49,6 +49,38 @@ public class Video {
         else return current_url;
     }
 
+    public static String search(String search, String[] sort){
+        reset_page();
+        Pattern pattern = Pattern.compile("(?<=\\.)\\S+(?=\\.)");
+        Matcher match = pattern.matcher(current_url);
+        String web = "";
+        if (match.find())
+            web = match.group();
+        if (web.equals("xvideos")) return xvid_search(search, sort);//sort, duration, date
+        if (web.equals("xnxx")) return xnxx_search(search, sort);//sort, duration, date
+        if (web.equals("redtube")) return redtube_search(search, sort);//sort
+        if (web.equals("xhamster")) return xhamster_search(search);// no sorting options
+        if (web.equals("pornhub")) return pornhub_search(search, sort);//sort
+        if (web.equals("porn")) return porn_search(search, sort);//sort, date
+        if (web.equals("youporn")) return youporn_search(search, sort);//sort
+        return current_url;
+    }
+
+    public static List<String> multiSearch(List<String> sites, String search, String[] sort){
+        reset_page();
+        List<String> url_list = new ArrayList<String>();
+        for(String web : sites){
+            if (web.equals("xvideos")) url_list.add(xvid_search(search, sort));//sort, duration, date
+            if (web.equals("xnxx"))  url_list.add(xnxx_search(search, sort));//sort, duration, date
+            if (web.equals("redtube"))  url_list.add(redtube_search(search, sort));//sort
+            if (web.equals("xhamster"))  url_list.add(xhamster_search(search));// no sorting options
+            if (web.equals("pornhub"))  url_list.add(pornhub_search(search, sort));//sort
+            if (web.equals("porn"))  url_list.add(porn_search(search, sort));//sort, date
+            if (web.equals("youporn"))  url_list.add(youporn_search(search, sort));//sort
+        }
+        return url_list;
+    }
+
     public static List<videoObject_xvideo> xvid_page(String url) {
         current_url = url;
         Document info = Jsoup.parse(videoObject.parseURLtoHTML(url));
@@ -72,16 +104,17 @@ public class Video {
         kList.add(new videoObject_xvideo("","next","drawable://" + R.drawable.arrow_next));
         return kList;
     }
-    //sort = relevance, uploaddate, or rating (relevance is default)
-    //dur = 1-3min, 3-10min, 10min_more, or allduration (allduration is default)
-    //date = today, week, month, or all (all is default)
-    public static String xvid_search(String search, String sort, String dur, String date){
-        if (sort.isEmpty()) sort = "relevance";
-        if (date.isEmpty()) date = "all";
-        if (dur.isEmpty()) dur = "allduration";
+
+    //sort[0] = relevance, uploaddate, or rating (rating is default)
+    //sort[1], dur = 1-3min, 3-10min, 10min_more, or allduration (allduration is default)
+    //sort[2], date = today, week, month, or all (all is default)
+    public static String xvid_search(String search, String[] sort) {
+        if (sort[0].isEmpty()) sort[0] = "rating";
+        if (sort[1].isEmpty()) sort[1] = "allduration";
+        if (sort[2].isEmpty()) sort[2] = "all";
         search = search.replace(" ", "+");
         String base = "http://www.xvideos.com/?k=";
-        current_url = base + search + "&sort=" + sort + "&durf=" + dur + "&datef=" + date;
+        current_url = base + search + "&sort=" + sort[0] + "&durf=" + sort[1] + "&datef=" + sort[2];
         return current_url;
     }
 
@@ -128,16 +161,16 @@ public class Video {
         return kList;
     }
 
-    //sort = relevance, uploaddate, or rating (relevance is default)
-    //dur = 1-3min, 3-10min, 10min_more, or allduration (allduration is default)
-    //date = today, week, month, or all (all is default)
-    public static String xnxx_search(String search, String sort, String dur, String date){
-        if (sort.isEmpty()) sort = "relevance";
-        if (date.isEmpty()) date = "all";
-        if (dur.isEmpty()) dur = "allduration";
+    //sort = relevance, uploaddate, or rating (rating is default)
+    //sort[1], dur = 1-3min, 3-10min, 10min_more, or allduration (allduration is default)
+    //sort[2], date = today, week, month, or all (all is default)
+    public static String xnxx_search(String search, String[] sort) {
+        if (sort[0].isEmpty()) sort[0] = "rating";
+        if (sort[1].isEmpty()) sort[1] = "allduration";
+        if (sort[2].isEmpty()) sort[2] = "all";
         String base = "http://www.xnxx.com/?k=";
         search = search.replace(" ", "+");
-        current_url = base + search + "&sort=" + sort + "&durf=" + dur + "&datef=" + date;
+        current_url = base + search + "&sort=" + sort[0] + "&durf=" + sort[1] + "&datef=" + sort[2];
         return current_url;
     }
 
@@ -187,10 +220,10 @@ public class Video {
     }
 
     //sort = "new", "top", "mostviewed", or "" ("" is default for most relevant)
-    public static String redtube_search(String search, String sort){
+    public static String redtube_search(String search, String[] sort) {
         String base = "http://www.redtube.com/";
         search = search.replace(" ", "+");
-        current_url = base + sort + "?search=" + search;
+        current_url = base + sort[0] + "?search=" + search;
         return current_url;
     }
 
@@ -284,10 +317,10 @@ public class Video {
     }
 
     //lg(longest), tr(top rated), mv(most viewed), mr(most recent), or ""(default is most relevant)
-    public static String pornhub_search(String search, String sort){
+    public static String pornhub_search(String search, String[] sort) {
         String base = "http://www.pornhub.com/video/search?search=";
         search = search.replace(" ", "+").toLowerCase();
-        current_url = base + search + "&o=" + sort;
+        current_url = base + search + "&o=" + sort[0];
         return current_url;
     }
 
@@ -331,12 +364,12 @@ public class Video {
         return kList;
     }
 
-    //d(date), v(views), f(popularity), r(rating), or ""(default is most relevant)
-    //1(today), 7(week), 30(month), or ""(default is all time)
-    public static String porn_search(String search, String sort, String time){
+    //sort[0] = d(date), v(views), f(popularity), r(rating), or ""(default is most relevant)
+    //sort[1], date = 1(today), 7(week), 30(month), or ""(default is all time)
+    public static String porn_search(String search, String[] sort) {
         String base = "http://www.porn.com/search?q=";
         search = search.replace(" ", "+");
-        current_url = base + search + "&o=" + sort + time;
+        current_url = base + search + "&o=" + sort[0] + sort[1];
         return current_url;
     }
 
@@ -359,6 +392,47 @@ public class Video {
         return current_url;
     }
 
+    public static List<videoObject_youporn> youporn_page(String url) {
+        current_url = url;
+        Document info = Jsoup.parse(videoObject.parseURLtoHTML(url));
+        Elements elem = info.select("div[class=wrapping-video-box]");
+        List<videoObject_youporn> kList = new ArrayList<videoObject_youporn>();
+        String vid, title, img;
+        for (Element link : elem) {
+            vid = link.children().select("a").attr("href");
+            if (!vid.equals("")) {
+                title = link.children().select("img").attr("alt");
+                img = link.children().select("img").attr("src");
+                kList.add(new videoObject_youporn(title, "http://www.youporn.com/" + vid, img));
+            }
+        }
+        return kList;
+    }
+
+    //"views", "rating", "duration", "date", or "relevance" / "" (relevance is defualt)
+    public static String youporn_search(String search, String[] sort) {
+        String base = "http://www.youporn.com/search/";
+        search = search.replace(" ", "+");
+        current_url = base + sort[0] + "/?query=" + search;
+        return current_url;
+    }
+
+    //NorP is (-1) or (1), for going to next or previous
+    public static String youporn_npPage(int NorP) {
+        if (page_number == 1 && NorP < 0) {
+            NorP = 0;
+        }
+
+        if (current_url.contains("page=")) {
+            current_url = current_url.replaceAll("page=\\d+", "page=" + (page_number + NorP));
+        } else if (current_url.contains("query=")) {
+            current_url += "&page=" + (page_number + NorP);
+        } else {
+            current_url = "http://www.youporn.com/?page=" + (page_number + NorP);
+        }
+        page_number += NorP;
+        return current_url;
+    }
 
 }
 
@@ -576,6 +650,23 @@ class videoObject_porn extends videoObject {
         Matcher matcher = pattern.matcher(line);
         matcher.find();
         vid_url_2 = matcher.group();
+        return vid_url_2;
+    }
+}
+
+class videoObject_youporn extends videoObject {
+
+    videoObject_youporn(String tit, String url, String pic) {
+        super(tit, url, pic);
+    }
+
+    String getVideoSourceURL() {
+        vid_url = Jsoup.parse(parseURLtoHTML(vid_pg_url)).select("video").attr("src");
+        return vid_url;
+    }
+
+    String getVideoSourceURL(String vid_pg_url_2) {
+        String vid_url_2 = Jsoup.parse(parseURLtoHTML(vid_pg_url)).select("video").attr("src");
         return vid_url_2;
     }
 }
