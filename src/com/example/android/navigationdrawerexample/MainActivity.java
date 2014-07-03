@@ -222,7 +222,7 @@ public class MainActivity extends Activity {
                         if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                             InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                             in.hideSoftInputFromWindow(editText.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
-                            new loadData_xvideo().execute(video.xvid_search(editText.getText().toString(), "", "", ""));
+                            new loadData_xvideo().execute(video.search(editText.getText().toString(), new String[]{"", "", ""}));
                             return true;
                         }
                         return false;
@@ -237,7 +237,7 @@ public class MainActivity extends Activity {
                         if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                             InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                             in.hideSoftInputFromWindow(editText.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
-                            new loadData_xnxx().execute(video.xnxx_search(editText.getText().toString(), "", "", ""));
+                            new loadData_xnxx().execute(video.search(editText.getText().toString(), new String[]{"", "", ""}));
                             return true;
                         }
                         return false;
@@ -252,7 +252,7 @@ public class MainActivity extends Activity {
                         if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                             InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                             in.hideSoftInputFromWindow(editText.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
-                            new loadData_redtube().execute(video.redtube_search(editText.getText().toString(), ""));
+                            new loadData_redtube().execute(video.search(editText.getText().toString(), new String[]{""}));
                             return true;
                         }
                         return false;
@@ -267,7 +267,7 @@ public class MainActivity extends Activity {
                         if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                             InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                             in.hideSoftInputFromWindow(editText.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
-                            new loadData_pornhub().execute(video.pornhub_search(editText.getText().toString(), ""));
+                            new loadData_pornhub().execute(video.search(editText.getText().toString(), new String[]{""}));
                             return true;
                         }
                         return false;
@@ -282,7 +282,7 @@ public class MainActivity extends Activity {
                         if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                             InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                             in.hideSoftInputFromWindow(editText.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
-                            new loadData_porn().execute(video.porn_search(editText.getText().toString(), "",""));
+                            new loadData_porn().execute(video.search(editText.getText().toString(), new String[]{"", ""}));
                             return true;
                         }
                         return false;
@@ -297,7 +297,22 @@ public class MainActivity extends Activity {
                         if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                             InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                             in.hideSoftInputFromWindow(editText.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
-                            new loadData_xhamster().execute(video.xhamster_search(editText.getText().toString()));
+                            new loadData_xhamster().execute(video.search(editText.getText().toString(), new String[]{""}));
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+                break;
+            case 6 :
+                new loadData_youporn().execute("http://www.youporn.com");
+                editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId,KeyEvent event) {
+                        if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                            InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            in.hideSoftInputFromWindow(editText.getApplicationWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+                            new loadData_youporn().execute(video.search(editText.getText().toString(), new String[]{""}));
                             return true;
                         }
                         return false;
@@ -618,6 +633,52 @@ public class MainActivity extends Activity {
                     @Override
                     protected Void doInBackground(String... strings) {
                         videoObject_xhamster.playVideo(videoObject_xhamster.getVideoSourceURL(strings[0]), mContext);
+                        return null;
+                    }
+                }
+
+
+            });
+        }
+    }
+
+    public class loadData_youporn extends AsyncTask<String, Void, List<videoObject_youporn>> {
+
+        @Override
+        protected List<videoObject_youporn> doInBackground(String... strings) {
+            List<videoObject_youporn> kList = video.youporn_page(strings[0]);
+            //Log.d("doInBackground", kList.get(0).getTitle());
+            return kList;
+        }
+
+        @Override
+        protected void onPostExecute(final List<videoObject_youporn> video_Objects){
+            gridView.setAdapter(new GridAdapter_youporn(mContext, video_Objects, imageLoader));
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    if(video_Objects.get(i).getVideoURL().equals("next")) {
+                        new loadData_youporn().execute(video.npPage(1));
+                        Toast.makeText(mContext, "Page " + video.getPage_number(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                    else if (video_Objects.get(i).getVideoURL().equals("prev")) {
+                        new loadData_youporn().execute(video.npPage(-1));
+                        Toast.makeText(mContext, "Page " + video.getPage_number(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        Toast.makeText(mContext, "Loading video...",
+                                Toast.LENGTH_LONG).show();
+                        new playvideo_youporn().execute(video_Objects.get(i).getVideoURL());
+                    }
+                }
+
+                class playvideo_youporn extends AsyncTask<String, Void, Void> {
+
+                    @Override
+                    protected Void doInBackground(String... strings) {
+                        videoObject_youporn.playVideo(videoObject_youporn.getVideoSourceURL(strings[0]), mContext);
                         return null;
                     }
                 }

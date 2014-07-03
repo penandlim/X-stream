@@ -136,3 +136,13 @@ class GridAdapter_porn extends GridAdapter {
         }
     }
 }
+
+class GridAdapter_youporn extends GridAdapter {
+
+    public GridAdapter_youporn(Context context, List<videoObject_youporn> videoList, ImageLoader mimageLoader) {
+        super(context, mimageLoader);
+        for (videoObject_youporn videoObject_variable : videoList) {
+            items.add(new Item(videoObject_variable.title, videoObject_variable.picture, videoObject_variable.vid_pg_url ));
+        }
+    }
+}

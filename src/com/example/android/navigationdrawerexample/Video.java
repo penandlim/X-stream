@@ -665,8 +665,8 @@ class videoObject_youporn extends videoObject {
         return vid_url;
     }
 
-    String getVideoSourceURL(String vid_pg_url_2) {
-        String vid_url_2 = Jsoup.parse(parseURLtoHTML(vid_pg_url)).select("video").attr("src");
+    static String getVideoSourceURL(String vid_pg_url_2) {
+        String vid_url_2 = Jsoup.parse(parseURLtoHTML(vid_pg_url_2)).select("video").attr("src");
         return vid_url_2;
     }
 }
